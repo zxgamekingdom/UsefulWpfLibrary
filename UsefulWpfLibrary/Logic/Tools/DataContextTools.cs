@@ -2,7 +2,7 @@ using System;
 using System.Windows;
 using UsefulWpfLibrary.Logic.ViewModels;
 
-namespace UsefulWpfLibrary.Logic
+namespace UsefulWpfLibrary.Logic.Tools
 {
     public static class DataContextTools
     {

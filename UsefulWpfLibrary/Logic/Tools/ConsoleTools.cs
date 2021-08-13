@@ -1,8 +1,8 @@
 using System.Runtime.InteropServices;
 
-namespace UsefulWpfLibrary.Logic
+namespace UsefulWpfLibrary.Logic.Tools
 {
-    public static class ConsoleOperator
+    public static class ConsoleTools
     {
         [DllImport("kernel32.dll")]
         public static extern bool AllocConsole();

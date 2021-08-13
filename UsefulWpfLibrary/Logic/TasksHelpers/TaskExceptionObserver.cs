@@ -9,7 +9,7 @@ namespace UsefulWpfLibrary.Logic.TasksHelpers
 
         public static void OnUnhandledTaskException(Exception e)
         {
-            $@"{nameof(UnhandledTaskException)}:{Environment.NewLine}{e}".WriteLine(
+            $"{nameof(UnhandledTaskException)}:{Environment.NewLine}{e}".WriteLine(
                 ConsoleColor.Red);
             UnhandledTaskException?.Invoke(null, e);
         }
