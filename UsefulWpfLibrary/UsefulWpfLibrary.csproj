@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net5.0-windows;net48</TargetFrameworks>
+		<UseWPF>true</UseWPF>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
+	  <PackageReference Include="Lamar" Version="5.0.4" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <PackageReference Include="PropertyChanged.Fody" Version="3.4.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Views\CustomControls\" />
+	</ItemGroup>
+</Project>
