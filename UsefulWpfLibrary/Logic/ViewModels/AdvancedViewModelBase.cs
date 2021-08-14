@@ -11,6 +11,16 @@ namespace UsefulWpfLibrary.Logic.ViewModels
     {
         private readonly List<ICommand> _commands = new();
 
+        protected override void OnPropertyChanged(string propertyName = null!)
+        {
+            WhenPropertyChanged(propertyName!);
+            base.OnPropertyChanged(propertyName!);
+        }
+
+        protected virtual void WhenPropertyChanged(string propertyName)
+        {
+        }
+
         protected ICommand CreateCommand(Action execute)
         {
 #pragma warning disable DF0100 // Marks return values that hides the IDisposable implementation of return value.
@@ -247,6 +257,7 @@ namespace UsefulWpfLibrary.Logic.ViewModels
         {
             if (disposing)
             {
+                OnDispose();
                 foreach (ICommand command in _commands)
                 {
                     if (command is IDisposable disposable)
@@ -257,6 +268,10 @@ namespace UsefulWpfLibrary.Logic.ViewModels
 
                 _commands.Clear();
             }
+        }
+
+        protected virtual void OnDispose()
+        {
         }
 
         public void Dispose()

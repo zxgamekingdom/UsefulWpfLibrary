@@ -1,9 +1,7 @@
 ﻿using System.Threading;
 using System.Windows;
-using UsefulWpfLibrary.Logic.TasksHelpers;
+using UsefulWpfLibrary.Logic;
 using UsefulWpfLibrary.Logic.Tools;
-using UsefulWpfLibrary.Views.Logic;
-using UsefulWpfLibrary.Views.Windows.MessageWindow;
 
 namespace WpfApp.Test
 {
@@ -16,17 +14,10 @@ namespace WpfApp.Test
 
         public App()
         {
-            InitializeComponent();
-            AdvancedTaskRun.Run(token =>
+            Ioc.Init(registry =>
             {
-                MessageBoxResult? messageBoxResult =
-                    MessageWindowTools.Show("1", messageType: MessageType.错误);
-                MessageWindowTools.Show(messageBoxResult.ToString());
             });
-            AdvancedTaskRun.Run(token =>
-                MessageWindowTools.Show("2", messageType: MessageType.信息));
-            AdvancedTaskRun.Run(token =>
-                MessageWindowTools.Show("3", messageType: MessageType.警告));
+            InitializeComponent();
             _mutex = SingletonProgramTools.GenToken(
                 "26CC549B-ACED-41DD-ADAF-6F252EC835F4");
         }

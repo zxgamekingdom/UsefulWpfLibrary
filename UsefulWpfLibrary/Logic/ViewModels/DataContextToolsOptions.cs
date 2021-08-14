@@ -11,6 +11,6 @@ namespace UsefulWpfLibrary.Logic.ViewModels
 
         public FrameworkElement? OwendFrameworkElement { get; private set; }
 
-        public bool IsAutoDispose { get; init; } = true;
+        public bool IsAutoDispose { get; set; } = true;
     }
 }

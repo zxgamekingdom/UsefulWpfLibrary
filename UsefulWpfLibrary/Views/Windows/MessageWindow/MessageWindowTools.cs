@@ -1,9 +1,7 @@
 ﻿using System.Threading;
 using System.Windows;
-using UsefulWpfLibrary.Logic.Tools;
-using UsefulWpfLibrary.Views.Windows.MessageWindow;
 
-namespace UsefulWpfLibrary.Views.Logic
+namespace UsefulWpfLibrary.Views.Windows.MessageWindow
 {
     public static class MessageWindowTools
     {

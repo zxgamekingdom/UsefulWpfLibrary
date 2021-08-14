@@ -12,6 +12,6 @@
 	  <PackageReference Include="PropertyChanged.Fody" Version="3.4.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Views\CustomControls\" />
+	  <Folder Include="Views\Logic\" />
 	</ItemGroup>
 </Project>

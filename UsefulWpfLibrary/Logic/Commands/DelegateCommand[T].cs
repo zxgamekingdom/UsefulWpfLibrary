@@ -31,7 +31,7 @@ namespace UsefulWpfLibrary.Logic.Commands
             LoopRun(canExecute);
         }
 
-        public DelegateCommand(Action execute, 
+        public DelegateCommand(Action execute,
             Func<TParameter?, CancellationToken, Task<bool>> canExecute) : this(execute)
         {
             LoopRun(canExecute);
@@ -91,7 +91,7 @@ namespace UsefulWpfLibrary.Logic.Commands
         }
 
         public event EventHandler? CanExecuteChanged;
-        public bool IsCanExecute { get; private set; }
+        public bool IsCanExecute { get; private set; } = true;
         private CancellationToken Token => _tokenSource.Token;
 
         public bool CanExecute(object? parameter)

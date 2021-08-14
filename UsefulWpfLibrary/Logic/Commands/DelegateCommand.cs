@@ -89,7 +89,7 @@ namespace UsefulWpfLibrary.Logic.Commands
         }
 
         public event EventHandler? CanExecuteChanged;
-        public bool IsCanExecute { get; private set; }
+        public bool IsCanExecute { get; private set; } = true;
         private CancellationToken Token => _tokenSource.Token;
 
         public bool CanExecute(object? parameter)
