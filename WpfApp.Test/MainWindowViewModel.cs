@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+
 using UsefulWpfLibrary.Logic.ViewModels;
 
 namespace WpfApp.Test
@@ -7,8 +8,6 @@ namespace WpfApp.Test
     public class MainWindowViewModel : AdvancedViewModelBase
     {
         private DateTime _buffTime;
-        public DateTime Time { get; set; }
-
         public MainWindowViewModel()
         {
             CommandUpdateTime = CreateCommand(() =>
@@ -33,10 +32,10 @@ namespace WpfApp.Test
                 new Window1().ShowDialog();
             });
         }
-
-        public decimal I { get; set; }
-        public ICommand CommandUpdateTime { get; }
         public ICommand CommandIAdd { get; }
         public ICommand CommandOpenWindow1 { get; }
+        public ICommand CommandUpdateTime { get; }
+        public decimal I { get; set; }
+        public DateTime Time { get; set; }
     }
 }

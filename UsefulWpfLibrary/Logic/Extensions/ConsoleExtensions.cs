@@ -4,8 +4,16 @@ namespace UsefulWpfLibrary.Logic.Extensions
 {
     public static class ConsoleExtensions
     {
-        public static void WriteLine<T>(this T t,
+        public static void ConsoleSplitLine(char splitLineChar = '_',
             ConsoleColor foregroundColor = ConsoleColor.Gray,
+            ConsoleColor backgroundColor = ConsoleColor.Black)
+        {
+            int width = Console.WindowWidth;
+            new string(splitLineChar, width - 1).WriteLine(foregroundColor,
+                backgroundColor);
+        }
+        public static void WriteLine<T>(this T t,
+                   ConsoleColor foregroundColor = ConsoleColor.Gray,
             ConsoleColor backgroundColor = ConsoleColor.Black)
         {
             lock (Console.Out)
@@ -18,15 +26,6 @@ namespace UsefulWpfLibrary.Logic.Extensions
                 Console.BackgroundColor = backgroundBuff;
                 Console.ForegroundColor = foregroundBuff;
             }
-        }
-
-        public static void ConsoleSplitLine(char splitLineChar = '_',
-            ConsoleColor foregroundColor = ConsoleColor.Gray,
-            ConsoleColor backgroundColor = ConsoleColor.Black)
-        {
-            int width = Console.WindowWidth;
-            new string(splitLineChar, width - 1).WriteLine(foregroundColor,
-                backgroundColor);
         }
     }
 }

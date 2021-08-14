@@ -12,21 +12,21 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 VerticalAlignment="Center"
-                                Text="{TemplateBinding ValueName}" />
+                                Text="{TemplateBinding ValueName}"/>
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
-                                Text=":" />
+                                Text=":"/>
                             <TextBox
                                 Grid.Column="2"
                                 VerticalContentAlignment="Center"
-                                Text="{Binding RelativeSource={RelativeSource AncestorType=oneValueEditor:OneValueEditor}, Path=Value, Mode=TwoWay}" />
+                                Text="{Binding RelativeSource={RelativeSource AncestorType=oneValueEditor:OneValueEditor}, Path=Value, Mode=TwoWay}"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>

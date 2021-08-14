@@ -60,8 +60,8 @@ namespace UsefulWpfLibrary.Logic.TasksHelpers
             try
             {
                 return await Task.Factory.StartNew(() =>
-                            func.Invoke(token),
-                        CancellationToken.None)
+                             func.Invoke(token),
+                       CancellationToken.None)
                     .Unwrap();
             }
             catch (Exception e)

@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:customControls="clr-namespace:UsefulWpfLibrary.Views.CustomControls"
     xmlns:oneValueViewer="clr-namespace:UsefulWpfLibrary.Views.CustomControls.OneValueViewer">
     <Style TargetType="{x:Type oneValueViewer:OneValueViewer}">
         <Setter Property="Template">
@@ -13,20 +12,20 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 VerticalAlignment="Center"
-                                Text="{TemplateBinding ValueName}" />
+                                Text="{TemplateBinding ValueName}"/>
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
-                                Text=":" />
+                                Text=":"/>
                             <Label
                                 Grid.Column="2"
-                                Content="{TemplateBinding Value}" />
+                                Content="{TemplateBinding Value}"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>

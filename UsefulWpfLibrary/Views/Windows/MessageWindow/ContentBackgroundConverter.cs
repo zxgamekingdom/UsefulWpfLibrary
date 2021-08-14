@@ -6,13 +6,8 @@ using System.Windows.Media;
 
 namespace UsefulWpfLibrary.Views.Windows.MessageWindow
 {
-    class ContentBackgroundConverter : MarkupExtension, IValueConverter
+    internal class ContentBackgroundConverter : MarkupExtension, IValueConverter
     {
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
-
         public object Convert(object value,
             Type targetType,
             object parameter,
@@ -28,13 +23,16 @@ namespace UsefulWpfLibrary.Views.Windows.MessageWindow
                 } :
                 value;
         }
-
         public object ConvertBack(object value,
             Type targetType,
             object parameter,
             CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
         }
     }
 }

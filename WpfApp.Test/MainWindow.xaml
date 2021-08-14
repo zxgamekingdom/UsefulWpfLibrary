@@ -19,25 +19,25 @@
     <StackPanel>
         <oneValueViewer:OneValueViewer
             ValueName="123"
-            Value="{Binding Time}" />
+            Value="{Binding Time}"/>
         <oneValueViewer:OneValueViewer
             ValueName="I"
-            Value="{Binding I}" />
+            Value="{Binding I}"/>
         <Button
             Command="{Binding CommandUpdateTime}"
-            Content="更新时间" />
+            Content="更新时间"/>
         <Button
             Command="{Binding CommandIAdd}"
-            Content="自增" />
+            Content="自增"/>
         <Button
             Command="{Binding CommandOpenWindow1}"
-            Content="打开Window1" />
+            Content="打开Window1"/>
         <oneValueEditor:OneValueEditor
             ValueName="I"
-            Value="{Binding I}" />
+            Value="{Binding I}"/>
         <oneValueEditor:OneValueEditor
             ValueName="时间"
-            Value="{Binding Time}" />
-        <Button Content="确认" />
+            Value="{Binding Time}"/>
+        <Button Content="确认"/>
     </StackPanel>
 </Window>

@@ -4,16 +4,14 @@ namespace UsefulWpfLibrary.Logic.Extensions
 {
     public static class StringExtensions
     {
-        public static bool IsNullOrWhiteSpace(this string? s)
-        {
-            return string.IsNullOrWhiteSpace(s);
-        }
-
         public static bool IsNotNullOrWhiteSpace(this string? s)
         {
             return !string.IsNullOrWhiteSpace(s);
         }
-
+        public static bool IsNullOrWhiteSpace(this string? s)
+        {
+            return string.IsNullOrWhiteSpace(s);
+        }
         public static void ShowErrorMessage(this string s)
         {
             MessageBox.Show(s, "´íÎó", MessageBoxButton.OK, MessageBoxImage.Error);

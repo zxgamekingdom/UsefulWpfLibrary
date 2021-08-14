@@ -9,14 +9,6 @@ namespace UsefulWpfLibrary.Views.Windows.MessageWindow
     /// </summary>
     partial class MessageWindow : Window
     {
-        public MessageWindow()
-        {
-            InitializeComponent();
-        }
-
-        public MessageBoxResult? MessageBoxResult { get; private set; } =
-            System.Windows.MessageBoxResult.None;
-
         public static readonly DependencyProperty MessageBoxButtonProperty =
             DependencyProperty.Register(nameof(MessageBoxButton),
                 typeof(MessageBoxButton),
@@ -24,8 +16,8 @@ namespace UsefulWpfLibrary.Views.Windows.MessageWindow
                 new PropertyMetadata(default(MessageBoxButton),
                     (o, args) =>
                     {
-                        var window = (MessageWindow) o;
-                        var messageBoxButton = (MessageBoxButton) args.NewValue;
+                        var window = (MessageWindow)o;
+                        var messageBoxButton = (MessageBoxButton)args.NewValue;
                         window.OkButton.Visibility = Visibility.Collapsed;
                         window.YesButton.Visibility = Visibility.Collapsed;
                         window.NoButton.Visibility = Visibility.Collapsed;
@@ -52,41 +44,38 @@ namespace UsefulWpfLibrary.Views.Windows.MessageWindow
                                 throw new ArgumentOutOfRangeException();
                         }
                     }));
-
-        public MessageBoxButton MessageBoxButton
-        {
-            get => (MessageBoxButton) GetValue(MessageBoxButtonProperty);
-            set => SetValue(MessageBoxButtonProperty, value);
-        }
-
-        public static readonly DependencyProperty MessageTypeProperty =
-            DependencyProperty.Register(nameof(MessageType),
-                typeof(MessageType),
-                typeof(MessageWindow),
-                new PropertyMetadata(default(MessageType)));
-
         public static readonly DependencyProperty MessageContentProperty =
             DependencyProperty.Register(nameof(MessageContent),
                 typeof(string),
                 typeof(MessageWindow),
                 new PropertyMetadata(default(string)));
+        public static readonly DependencyProperty MessageTypeProperty =
+            DependencyProperty.Register(nameof(MessageType),
+                typeof(MessageType),
+                typeof(MessageWindow),
+                new PropertyMetadata(default(MessageType)));
+        public MessageWindow()
+        {
+            InitializeComponent();
+        }
 
+        public MessageBoxButton MessageBoxButton
+        {
+            get => (MessageBoxButton)GetValue(MessageBoxButtonProperty);
+            set => SetValue(MessageBoxButtonProperty, value);
+        }
+        public MessageBoxResult? MessageBoxResult { get; private set; } =
+                   System.Windows.MessageBoxResult.None;
         public string MessageContent
         {
-            get => (string) GetValue(MessageContentProperty);
+            get => (string)GetValue(MessageContentProperty);
             set => SetValue(MessageContentProperty, value);
         }
 
         public MessageType MessageType
         {
-            get => (MessageType) GetValue(MessageTypeProperty);
+            get => (MessageType)GetValue(MessageTypeProperty);
             set => SetValue(MessageTypeProperty, value);
-        }
-
-        private void CloseBorder_OnMouseLeftButtonUp(object sender,
-            MouseButtonEventArgs e)
-        {
-            Close();
         }
 
         private void Button_OnClick(object sender, RoutedEventArgs e)
@@ -108,6 +97,11 @@ namespace UsefulWpfLibrary.Views.Windows.MessageWindow
                 MessageBoxResult = System.Windows.MessageBoxResult.Cancel;
             }
 
+            Close();
+        }
+        private void CloseBorder_OnMouseLeftButtonUp(object sender,
+                    MouseButtonEventArgs e)
+        {
             Close();
         }
     }

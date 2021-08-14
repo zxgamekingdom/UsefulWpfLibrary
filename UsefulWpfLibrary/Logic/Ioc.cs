@@ -1,7 +1,10 @@
-using System;
 using JetBrains.Annotations;
+
 using Lamar;
+
 using Microsoft.Extensions.DependencyInjection;
+
+using System;
 
 namespace UsefulWpfLibrary.Logic
 {

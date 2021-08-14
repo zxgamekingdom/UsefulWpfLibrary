@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+
 using UsefulWpfLibrary.Logic.TasksHelpers;
 
 namespace UsefulWpfLibrary.Logic.Commands
@@ -100,6 +101,11 @@ namespace UsefulWpfLibrary.Logic.Commands
             return IsCanExecute;
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
         public void Execute(object? parameter)
         {
             var buff = parameter as TParameter;
@@ -110,6 +116,14 @@ namespace UsefulWpfLibrary.Logic.Commands
             _taskParameterExecute?.Invoke(buff);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _tokenSource.Cancel();
+                _tokenSource.Dispose();
+            }
+        }
         protected virtual void RaiseCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
@@ -150,21 +164,6 @@ namespace UsefulWpfLibrary.Logic.Commands
                     }
                 },
                 Token);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _tokenSource.Cancel();
-                _tokenSource.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -26,14 +26,14 @@
                 Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
                 <EasingColorKeyFrame
                     KeyTime="00:00:00.7000000"
-                    Value="LightGray" />
+                    Value="LightGray"/>
             </ColorAnimationUsingKeyFrames>
             <ColorAnimationUsingKeyFrames
                 Storyboard.TargetName="ClosePath"
                 Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
                 <EasingColorKeyFrame
                     KeyTime="00:00:00.7000000"
-                    Value="Red" />
+                    Value="Red"/>
             </ColorAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
@@ -51,17 +51,17 @@
                         <EventTrigger RoutedEvent="Border.MouseEnter">
                             <BeginStoryboard
                                 Name="CloseBorderStoryboard"
-                                Storyboard="{DynamicResource CloseMouseEnter}" />
+                                Storyboard="{DynamicResource CloseMouseEnter}"/>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="Border.MouseLeave">
-                            <StopStoryboard BeginStoryboardName="CloseBorderStoryboard" />
+                            <StopStoryboard BeginStoryboardName="CloseBorderStoryboard"/>
                         </EventTrigger>
                     </Border.Triggers>
                     <Path
                         x:Name="ClosePath"
                         Data="M778.340887 202.782266q45.399015 32.283744 80.70936 73.142857t60.53202 88.275862 38.336946 100.382266 13.115271 107.444335q0 93.824631-35.814778 176.047291t-96.851232 143.259113-143.259113 96.851232-176.047291 35.814778q-92.815764 0-175.038424-35.814778t-143.763547-96.851232-96.851232-143.259113-35.310345-176.047291q0-53.469951 12.610837-104.922167t35.814778-97.860099 57.505419-86.762562 76.673892-72.638424q22.195074-16.141872 47.921182-12.106404t41.86798 25.221675 12.106404 47.416749-25.221675 42.372414q-63.558621 46.407882-97.355665 114.00197t-33.797044 145.276847q0 66.585222 25.221675 125.603941t69.107389 102.904433 102.904433 69.611823 125.603941 25.726108 125.603941-25.726108 102.904433-69.611823 69.611823-102.904433 25.726108-125.603941q0-78.691626-36.319212-148.807882t-101.895567-115.515271q-22.195074-15.133005-26.734975-41.363547t10.593103-48.425616q15.133005-21.186207 41.363547-25.726108t48.425616 10.593103zM519.062069 575.054187q-26.230542 0-44.894581-18.664039t-18.664039-44.894581l0-383.369458q0-26.230542 18.664039-45.399015t44.894581-19.168473q27.239409 0 45.903448 19.168473t18.664039 45.399015l0 383.369458q0 26.230542-18.664039 44.894581t-45.903448 18.664039z"
                         Fill="{Binding ElementName=Window, Path=MessageType, Mode=OneWay, Converter={messageWindow:ContentBackgroundConverter}}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform"/>
                 </Border>
             </Grid>
             <Grid
@@ -70,14 +70,14 @@
                 VerticalAlignment="Center"
                 Background="{Binding ElementName=Window, Path=MessageType, Mode=OneWay, Converter={messageWindow:ContentBackgroundConverter}}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock
                     HorizontalAlignment="Center"
                     FontSize="1cm"
-                    Text="{Binding ElementName=Window, Path=Title, Mode=OneWay}" />
+                    Text="{Binding ElementName=Window, Path=Title, Mode=OneWay}"/>
                 <TextBox
                     Grid.Row="1"
                     Margin="10"
@@ -88,40 +88,40 @@
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     Text="{Binding MessageContent, ElementName=Window, Mode=OneWay}"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap"/>
                 <StackPanel
                     Grid.Row="2"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal">
                     <StackPanel.Resources>
                         <Style TargetType="Button">
-                            <Setter Property="Padding" Value="10,0" />
-                            <Setter Property="Margin" Value="20,10" />
-                            <Setter Property="FontSize" Value=".6cm" />
-                            <Setter Property="Background" Value="{Binding ElementName=Window, Path=MessageType, Mode=OneWay, Converter={messageWindow:ContentBackgroundConverter}}" />
-                            <Setter Property="BorderBrush" Value="Black" />
-                            <Setter Property="BorderThickness" Value="2" />
+                            <Setter Property="Padding" Value="10,0"/>
+                            <Setter Property="Margin" Value="20,10"/>
+                            <Setter Property="FontSize" Value=".6cm"/>
+                            <Setter Property="Background" Value="{Binding ElementName=Window, Path=MessageType, Mode=OneWay, Converter={messageWindow:ContentBackgroundConverter}}"/>
+                            <Setter Property="BorderBrush" Value="Black"/>
+                            <Setter Property="BorderThickness" Value="2"/>
                         </Style>
                     </StackPanel.Resources>
                     <Button
                         x:Name="OkButton"
                         Click="Button_OnClick"
-                        Content="确定" />
+                        Content="确定"/>
                     <Button
                         x:Name="YesButton"
                         Click="Button_OnClick"
                         Content="是"
-                        Visibility="Collapsed" />
+                        Visibility="Collapsed"/>
                     <Button
                         x:Name="NoButton"
                         Click="Button_OnClick"
                         Content="否"
-                        Visibility="Collapsed" />
+                        Visibility="Collapsed"/>
                     <Button
                         x:Name="CancelButton"
                         Click="Button_OnClick"
                         Content="取消"
-                        Visibility="Collapsed" />
+                        Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
         </Grid>

@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+
 using UsefulWpfLibrary.Logic.ViewModels;
 
 namespace UsefulWpfLibrary.Logic.Tools
@@ -12,25 +13,14 @@ namespace UsefulWpfLibrary.Logic.Tools
                 typeof(DataContextTools),
                 new PropertyMetadata(default(Type), PropertyChangedCallback));
 
-        private static void PropertyChangedCallback(DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
+        public static Type GetDataContextType(FrameworkElement element)
         {
-            var element = (FrameworkElement) d;
-            DisposeDataContext(element);
-            var type = (Type) e.NewValue;
-            element.DataContext = Ioc.Get(type);
-            if (element.DataContext is ISetDataContextToolsOptions options)
-                options.Options.SetOwendFrameworkElement(element);
-            element.Unloaded += FrameworkElementOnUnloaded;
+            return (Type)element.GetValue(DataContextTypeProperty);
         }
-
-        private static void FrameworkElementOnUnloaded(object sender, RoutedEventArgs e)
+        public static void SetDataContextType(FrameworkElement element, Type value)
         {
-            var element = (FrameworkElement) sender;
-            DisposeDataContext(element);
-            element.Unloaded -= FrameworkElementOnUnloaded;
+            element.SetValue(DataContextTypeProperty, value);
         }
-
         private static void DisposeDataContext(FrameworkElement element)
         {
             object dataContext = element.DataContext;
@@ -46,15 +36,22 @@ namespace UsefulWpfLibrary.Logic.Tools
                 element.DataContext = default;
             }
         }
-
-        public static void SetDataContextType(FrameworkElement element, Type value)
+        private static void FrameworkElementOnUnloaded(object sender, RoutedEventArgs e)
         {
-            element.SetValue(DataContextTypeProperty, value);
+            var element = (FrameworkElement)sender;
+            DisposeDataContext(element);
+            element.Unloaded -= FrameworkElementOnUnloaded;
         }
-
-        public static Type GetDataContextType(FrameworkElement element)
+        private static void PropertyChangedCallback(DependencyObject d,
+                                                    DependencyPropertyChangedEventArgs e)
         {
-            return (Type) element.GetValue(DataContextTypeProperty);
+            var element = (FrameworkElement)d;
+            DisposeDataContext(element);
+            var type = (Type)e.NewValue;
+            element.DataContext = Ioc.Get(type);
+            if (element.DataContext is ISetDataContextToolsOptions options)
+                options.Options.SetOwendFrameworkElement(element);
+            element.Unloaded += FrameworkElementOnUnloaded;
         }
     }
 }

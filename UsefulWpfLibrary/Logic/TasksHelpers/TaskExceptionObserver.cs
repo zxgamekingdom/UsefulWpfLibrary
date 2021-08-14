@@ -1,4 +1,5 @@
 using System;
+
 using UsefulWpfLibrary.Logic.Extensions;
 
 namespace UsefulWpfLibrary.Logic.TasksHelpers
