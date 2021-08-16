@@ -5,10 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:multiValueEditor="clr-namespace:UsefulWpfLibrary.Views.CustomControls.MultiValueEditor;assembly=UsefulWpfLibrary"
-    xmlns:oneValueEditor="clr-namespace:UsefulWpfLibrary.Views.CustomControls.OneValueEditor;assembly=UsefulWpfLibrary"
-    xmlns:oneValueViewer="clr-namespace:UsefulWpfLibrary.Views.CustomControls.OneValueViewer;assembly=UsefulWpfLibrary"
     xmlns:test="clr-namespace:WpfApp.Test"
     xmlns:tools="clr-namespace:UsefulWpfLibrary.Logic.Tools;assembly=UsefulWpfLibrary"
+    xmlns:singleValueEditor="clr-namespace:UsefulWpfLibrary.Views.CustomControls.SingleValueEditor;assembly=UsefulWpfLibrary"
+    xmlns:singleValueViewer="clr-namespace:UsefulWpfLibrary.Views.CustomControls.SingleValueViewer;assembly=UsefulWpfLibrary"
     Title="MainWindow"
     Width="800"
     Height="450"
@@ -18,10 +18,10 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <StackPanel>
-        <oneValueViewer:OneValueViewer
+        <singleValueViewer:SingleValueViewer
             ValueName="123"
             Value="{Binding Time}" />
-        <oneValueViewer:OneValueViewer
+        <singleValueViewer:SingleValueViewer
             ValueName="I"
             Value="{Binding I}" />
         <Button
@@ -33,7 +33,7 @@
         <Button
             Command="{Binding CommandOpenWindow1}"
             Content="打开Window1" />
-        <oneValueEditor:OneValueEditor
+        <singleValueEditor:SingleValueEditor
             ValueName="I"
             Value="{Binding I}" />
         <multiValueEditor:MultiValueEditor
@@ -47,7 +47,7 @@
                 </ContextMenu>
             </multiValueEditor:MultiValueEditor.ContextMenu>
         </multiValueEditor:MultiValueEditor>
-        <oneValueEditor:OneValueEditor
+        <singleValueEditor:SingleValueEditor
             ValueName="时间"
             Value="{Binding Time}" />
         <Button Content="确认" />

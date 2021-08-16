@@ -1,24 +1,25 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace UsefulWpfLibrary.Views.CustomControls.OneValueViewer
+namespace UsefulWpfLibrary.Views.CustomControls.SingleValueEditor
 {
-    public class OneValueViewer : Control
+    public class SingleValueEditor : Control
     {
         public static readonly DependencyProperty ValueNameProperty =
             DependencyProperty.Register(nameof(ValueName),
                 typeof(string),
-                typeof(OneValueViewer),
+                typeof(SingleValueEditor),
                 new PropertyMetadata(default(string)));
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register(nameof(Value),
                 typeof(object),
-                typeof(OneValueViewer),
-                new PropertyMetadata(default(object)));
-        static OneValueViewer()
+                typeof(SingleValueEditor),
+                new FrameworkPropertyMetadata(default(object),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        static SingleValueEditor()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(OneValueViewer),
-                new FrameworkPropertyMetadata(typeof(OneValueViewer)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(SingleValueEditor),
+                new FrameworkPropertyMetadata(typeof(SingleValueEditor)));
         }
         public object Value
         {

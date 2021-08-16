@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/UsefulWpfLibrary;component/Views/CustomControls/OneValueViewer/OneValueViewerDictionary.xaml" />
-        <ResourceDictionary Source="/UsefulWpfLibrary;component/Views/CustomControls/OneValueEditor/OneValueEditorDictionary.xaml" />
+        <ResourceDictionary Source="/UsefulWpfLibrary;component/Views/CustomControls/SingleValueEditor/SingleValueEditorDictionary.xaml" />
+        <ResourceDictionary Source="/UsefulWpfLibrary;component/Views/CustomControls/SingleValueViewer/SingleValueViewerDictionary.xaml" />
         <ResourceDictionary Source="/UsefulWpfLibrary;component/Views/CustomControls/MultiValueEditor/MultiValueEditorDictionary.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
