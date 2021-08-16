@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-
 using UsefulWpfLibrary.Logic.TasksHelpers;
 
 namespace UsefulWpfLibrary.Logic.Commands
@@ -24,14 +23,14 @@ namespace UsefulWpfLibrary.Logic.Commands
                 execute ?? throw new ArgumentNullException(nameof(execute));
         }
 
-        public DelegateCommand(Action execute,
-            Func<object?, CancellationToken, bool> canExecute) : this(execute)
+        public DelegateCommand(Action execute, Func<CanExecuteArgs, bool> canExecute) :
+            this(execute)
         {
             LoopRun(canExecute);
         }
 
         public DelegateCommand(Action execute,
-            Func<object?, CancellationToken, Task<bool>> canExecute) : this(execute)
+            Func<CanExecuteArgs, Task<bool>> canExecute) : this(execute)
         {
             LoopRun(canExecute);
         }
@@ -43,13 +42,13 @@ namespace UsefulWpfLibrary.Logic.Commands
         }
 
         public DelegateCommand(Action<object?> execute,
-            Func<object?, CancellationToken, bool> canExecute) : this(execute)
+            Func<CanExecuteArgs, bool> canExecute) : this(execute)
         {
             LoopRun(canExecute);
         }
 
         public DelegateCommand(Action<object?> execute,
-            Func<object?, CancellationToken, Task<bool>> canExecute) : this(execute)
+            Func<CanExecuteArgs, Task<bool>> canExecute) : this(execute)
         {
             LoopRun(canExecute);
         }
@@ -60,13 +59,13 @@ namespace UsefulWpfLibrary.Logic.Commands
         }
 
         public DelegateCommand(Func<Task> execute,
-            Func<object?, CancellationToken, bool> canExecute) : this(execute)
+            Func<CanExecuteArgs, bool> canExecute) : this(execute)
         {
             LoopRun(canExecute);
         }
 
         public DelegateCommand(Func<Task> execute,
-            Func<object?, CancellationToken, Task<bool>> canExecute) : this(execute)
+            Func<CanExecuteArgs, Task<bool>> canExecute) : this(execute)
         {
             LoopRun(canExecute);
         }
@@ -78,13 +77,13 @@ namespace UsefulWpfLibrary.Logic.Commands
         }
 
         public DelegateCommand(Func<object?, Task> execute,
-            Func<object?, CancellationToken, bool> canExecute) : this(execute)
+            Func<CanExecuteArgs, bool> canExecute) : this(execute)
         {
             LoopRun(canExecute);
         }
 
         public DelegateCommand(Func<object?, Task> execute,
-            Func<object?, CancellationToken, Task<bool>> canExecute) : this(execute)
+            Func<CanExecuteArgs, Task<bool>> canExecute) : this(execute)
         {
             LoopRun(canExecute);
         }
@@ -104,6 +103,7 @@ namespace UsefulWpfLibrary.Logic.Commands
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
         public void Execute(object? parameter)
         {
             _buffParameter = parameter;
@@ -121,12 +121,13 @@ namespace UsefulWpfLibrary.Logic.Commands
                 _tokenSource.Dispose();
             }
         }
+
         protected virtual void RaiseCanExecuteChanged()
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void LoopRun(Func<object?, CancellationToken, Task<bool>> canExecute)
+        private void LoopRun(Func<CanExecuteArgs, Task<bool>> canExecute)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
             _ = AdvancedTaskRun.Run(async ct =>
@@ -137,14 +138,16 @@ namespace UsefulWpfLibrary.Logic.Commands
                             RaiseCanExecuteChanged,
                             DispatcherPriority.ApplicationIdle,
                             ct);
-                        IsCanExecute = await canExecute.Invoke(_buffParameter, ct);
+                        IsCanExecute =
+                            await canExecute.Invoke(
+                                new CanExecuteArgs(_buffParameter, ct));
                         await Task.Delay(1, ct);
                     }
                 },
                 Token);
         }
 
-        private void LoopRun(Func<object?, CancellationToken, bool> canExecute)
+        private void LoopRun(Func<CanExecuteArgs, bool> canExecute)
         {
             if (canExecute == null) throw new ArgumentNullException(nameof(canExecute));
             _ = AdvancedTaskRun.Run(async ct =>
@@ -155,7 +158,8 @@ namespace UsefulWpfLibrary.Logic.Commands
                             RaiseCanExecuteChanged,
                             DispatcherPriority.ApplicationIdle,
                             ct);
-                        IsCanExecute = canExecute.Invoke(_buffParameter, ct);
+                        IsCanExecute =
+                            canExecute.Invoke(new CanExecuteArgs(_buffParameter, ct));
                         await Task.Delay(1, ct);
                     }
                 },

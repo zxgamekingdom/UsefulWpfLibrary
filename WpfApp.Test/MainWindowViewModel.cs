@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
-
 using UsefulWpfLibrary.Logic.ViewModels;
 
 namespace WpfApp.Test
@@ -8,6 +8,7 @@ namespace WpfApp.Test
     public class MainWindowViewModel : AdvancedViewModelBase
     {
         private DateTime _buffTime;
+
         public MainWindowViewModel()
         {
             CommandUpdateTime = CreateCommand(() =>
@@ -15,25 +16,16 @@ namespace WpfApp.Test
                     _buffTime = DateTime.Now;
                     Time = DateTime.Now;
                 },
-                (_, _) => DateTime.Now - _buffTime >= TimeSpan.FromSeconds(10));
-            CommandIAdd = CreateCommand(() =>
-            {
-                if (I > 1)
-                {
-                    I /= 999;
-                }
-                else
-                {
-                    I *= 999;
-                }
-            });
-            CommandOpenWindow1 = CreateCommand(() =>
-            {
-                new Window1().ShowDialog();
-            });
+                _ => Task.FromResult(
+                    DateTime.Now - _buffTime >= TimeSpan.FromSeconds(1)));
+            CommandIAdd = CreateCommand(() => I++);
+            CommandOpenWindow1 = CreateCommand(() => new Window1().ShowDialog());
+            CommandDispose = CreateCommand(Dispose);
         }
+
         public ICommand CommandIAdd { get; }
         public ICommand CommandOpenWindow1 { get; }
+        public ICommand CommandDispose { get; }
         public ICommand CommandUpdateTime { get; }
         public decimal I { get; set; }
         public DateTime Time { get; set; }

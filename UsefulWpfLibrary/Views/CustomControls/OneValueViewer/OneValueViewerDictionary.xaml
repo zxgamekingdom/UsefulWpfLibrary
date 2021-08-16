@@ -12,20 +12,20 @@
                         BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 VerticalAlignment="Center"
-                                Text="{TemplateBinding ValueName}"/>
+                                Text="{TemplateBinding ValueName}" />
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
-                                Text=":"/>
+                                Text=":" />
                             <Label
                                 Grid.Column="2"
-                                Content="{TemplateBinding Value}"/>
+                                Content="{TemplateBinding Value}" />
                         </Grid>
                     </Border>
                 </ControlTemplate>

@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Windows;
-
 using UsefulWpfLibrary.Logic;
 using UsefulWpfLibrary.Logic.Tools;
 
