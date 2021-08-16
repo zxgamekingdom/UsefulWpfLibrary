@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:multiValueEditor="clr-namespace:UsefulWpfLibrary.Views.CustomControls.MultiValueEditor;assembly=UsefulWpfLibrary"
     xmlns:oneValueEditor="clr-namespace:UsefulWpfLibrary.Views.CustomControls.OneValueEditor;assembly=UsefulWpfLibrary"
     xmlns:oneValueViewer="clr-namespace:UsefulWpfLibrary.Views.CustomControls.OneValueViewer;assembly=UsefulWpfLibrary"
     xmlns:test="clr-namespace:WpfApp.Test"
@@ -35,6 +36,17 @@
         <oneValueEditor:OneValueEditor
             ValueName="I"
             Value="{Binding I}" />
+        <multiValueEditor:MultiValueEditor
+            DataContext="{Binding Info}"
+            Header="TestInfo">
+            <multiValueEditor:MultiValueEditor.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                        Command="{Binding CommandShow}"
+                        Header="显示" />
+                </ContextMenu>
+            </multiValueEditor:MultiValueEditor.ContextMenu>
+        </multiValueEditor:MultiValueEditor>
         <oneValueEditor:OneValueEditor
             ValueName="时间"
             Value="{Binding Time}" />

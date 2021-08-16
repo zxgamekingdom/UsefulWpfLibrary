@@ -21,7 +21,7 @@ namespace UsefulWpfLibrary.Logic.Tools
             Mutex mutex = new(true, identification, out bool @new);
             if (@new is false)
             {
-                $@"已有一个唯一识别码为""{identification}""的软件正在运行,本软件无法运行".ShowErrorMessage();
+                $@"已有一个唯一识别码为""{identification}""的软件正在运行,本软件无法运行".ShowErrorMessageBox();
                 Application.Current.Shutdown(0);
                 Environment.Exit(0);
                 throw new InvalidOperationException();
