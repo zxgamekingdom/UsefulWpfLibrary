@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Drawing.Imaging;
 using System.Reflection;
-using System.Windows.Controls;
 using System.Windows.Input;
 using UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Options.Args;
 

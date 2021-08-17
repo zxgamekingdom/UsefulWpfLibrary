@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Options.Args
 {

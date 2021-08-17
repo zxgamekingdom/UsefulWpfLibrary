@@ -1,9 +1,9 @@
 using JetBrains.Annotations;
-
 using System;
+using System.ComponentModel.Design;
+using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Windows;
-
 using UsefulWpfLibrary.Logic.Extensions;
 
 namespace UsefulWpfLibrary.Logic.Tools

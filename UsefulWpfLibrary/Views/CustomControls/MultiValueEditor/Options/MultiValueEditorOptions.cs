@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Attributes;
 using UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Options.Args;
 
