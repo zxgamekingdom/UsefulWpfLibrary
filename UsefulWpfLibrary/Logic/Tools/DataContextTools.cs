@@ -1,6 +1,5 @@
 using System;
 using System.Windows;
-
 using UsefulWpfLibrary.Logic.ViewModels;
 
 namespace UsefulWpfLibrary.Logic.Tools
