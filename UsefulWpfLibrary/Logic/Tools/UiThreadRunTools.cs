@@ -5,17 +5,17 @@ using System.Windows.Threading;
 
 namespace UsefulWpfLibrary.Logic.Tools
 {
-    public static class MainThreadRun
+    public static class UiThreadRunTools
     {
-        public static bool IsInMainThread => GetDispatcher().CheckAccess();
-        public static bool IsNotInMainThread => !GetDispatcher().CheckAccess();
+        public static bool IsInUiThread => GetDispatcher().CheckAccess();
+        public static bool IsNotInUiThread => !GetDispatcher().CheckAccess();
         public static Dispatcher GetDispatcher()
         {
             return Application.Current.Dispatcher;
         }
         public static void Invoke(Action callback)
         {
-            if (IsNotInMainThread)
+            if (IsNotInUiThread)
                 GetDispatcher().Invoke(callback);
             else
                 callback.Invoke();
@@ -23,7 +23,7 @@ namespace UsefulWpfLibrary.Logic.Tools
 
         public static T Invoke<T>(Func<T> callback)
         {
-            return IsNotInMainThread ?
+            return IsNotInUiThread ?
                 GetDispatcher().Invoke(callback) :
                 callback.Invoke();
         }
