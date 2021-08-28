@@ -1,21 +1,19 @@
-﻿using System.Threading;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Threading;
 
 namespace UsefulWpfLibrary.Views.Windows.MessageWindow
 {
     public static class MessageWindowTools
     {
-        public static MessageBoxResult? Show(string message,
+        public static DispatcherOperation<MessageBoxResult?> Show(string message,
             string? title = null,
             MessageType messageType = MessageType.信息,
             MessageBoxButton messageBoxButton = MessageBoxButton.OK)
         {
             title ??= messageType.ToString();
-
-            MessageWindow messageWindow = null!;
-            var thread = new Thread(() =>
+            return Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                messageWindow = new MessageWindow
+                MessageWindow messageWindow = new()
                 {
                     Title = title,
                     MessageType = messageType,
@@ -23,11 +21,8 @@ namespace UsefulWpfLibrary.Views.Windows.MessageWindow
                     MessageBoxButton = messageBoxButton
                 };
                 messageWindow.ShowDialog();
+                return messageWindow.MessageBoxResult;
             });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join();
-            return messageWindow!.MessageBoxResult;
         }
     }
 }

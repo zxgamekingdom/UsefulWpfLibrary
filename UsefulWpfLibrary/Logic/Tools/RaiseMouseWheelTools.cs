@@ -5,38 +5,84 @@ namespace UsefulWpfLibrary.Logic.Tools
 {
     public static class RaiseMouseWheelTools
     {
-        public static readonly DependencyProperty IsRaiseMouseWheelProperty =
-            DependencyProperty.RegisterAttached("IsRaiseMouseWheel",
+        public static readonly DependencyProperty IsRaiseProperty =
+            DependencyProperty.RegisterAttached("IsRaise",
                 typeof(bool),
                 typeof(RaiseMouseWheelTools),
                 new PropertyMetadata(default(bool), PropertyChangedCallback));
 
+        private static readonly DependencyProperty MouseWheelEventHandlerProperty =
+            DependencyProperty.RegisterAttached("MouseWheelEventHandler",
+                typeof(MouseWheelEventHandler),
+                typeof(RaiseMouseWheelTools),
+                new PropertyMetadata(default(MouseWheelEventHandler)));
+
+        public static void ElementOnPreviewMouseWheel(object sender,
+            MouseWheelEventArgs e)
+        {
+            // ReSharper disable once UseObjectOrCollectionInitializer
+            var eventArgs = new MouseWheelEventArgs(e.MouseDevice,
+                e.Timestamp,
+                e.Delta);
+            eventArgs.RoutedEvent = UIElement.MouseWheelEvent;
+            eventArgs.Source = sender;
+            ((FrameworkElement)sender).RaiseEvent(eventArgs);
+        }
+
+        public static bool GetIsRaise(FrameworkElement element)
+        {
+            return (bool)element.GetValue(IsRaiseProperty);
+        }
+
+        public static void SetIsRaise(FrameworkElement element, bool value)
+        {
+            element.SetValue(IsRaiseProperty, value);
+        }
+
+        private static void ElementOnUnloaded(object sender, RoutedEventArgs e)
+        {
+            var element = (FrameworkElement)sender;
+            element.Unloaded -= ElementOnUnloaded;
+            RemoveMouseWheelEventHandler(element);
+        }
+
+        private static MouseWheelEventHandler GetMouseWheelEventHandler(
+            DependencyObject element)
+        {
+            return (MouseWheelEventHandler)element.GetValue(
+                MouseWheelEventHandlerProperty);
+        }
+
         private static void PropertyChangedCallback(DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
-            FrameworkElement element = (FrameworkElement)d;
+            var element = (FrameworkElement)d;
             var value = (bool)e.NewValue;
-            if (value is false) return;
-            element.PreviewMouseWheel += (_, args) =>
+            if (value)
             {
-                // ReSharper disable once UseObjectOrCollectionInitializer
-                var eventArgs = new MouseWheelEventArgs(args.MouseDevice,
-                    args.Timestamp,
-                    args.Delta);
-                eventArgs.RoutedEvent = UIElement.MouseWheelEvent;
-                eventArgs.Source = element;
-                element.RaiseEvent(eventArgs);
-            };
+                RemoveMouseWheelEventHandler(element);
+                MouseWheelEventHandler handler = ElementOnPreviewMouseWheel;
+                element.PreviewMouseWheel += handler;
+                SetMouseWheelEventHandler(element, handler);
+            }
+            else
+            {
+                RemoveMouseWheelEventHandler(element);
+            }
+
+            element.Unloaded += ElementOnUnloaded;
         }
 
-        public static void SetIsRaiseMouseWheel(FrameworkElement element, bool value)
+        private static void RemoveMouseWheelEventHandler(FrameworkElement element)
         {
-            element.SetValue(IsRaiseMouseWheelProperty, value);
+            MouseWheelEventHandler eventHandler = GetMouseWheelEventHandler(element);
+            element.PreviewMouseWheel -= eventHandler;
         }
 
-        public static bool GetIsRaiseMouseWheel(FrameworkElement element)
+        private static void SetMouseWheelEventHandler(DependencyObject element,
+            MouseWheelEventHandler value)
         {
-            return (bool)element.GetValue(IsRaiseMouseWheelProperty);
+            element.SetValue(MouseWheelEventHandlerProperty, value);
         }
     }
 }

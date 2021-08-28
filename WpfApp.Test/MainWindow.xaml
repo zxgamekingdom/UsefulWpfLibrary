@@ -2,21 +2,24 @@
     x:Class="WpfApp.Test.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:behaviors="clr-namespace:UsefulWpfLibrary.Logic.Behaviors;assembly=UsefulWpfLibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:multiValueEditor="clr-namespace:UsefulWpfLibrary.Views.CustomControls.MultiValueEditor;assembly=UsefulWpfLibrary"
     xmlns:singleValueEditor="clr-namespace:UsefulWpfLibrary.Views.CustomControls.SingleValueEditor;assembly=UsefulWpfLibrary"
     xmlns:singleValueViewer="clr-namespace:UsefulWpfLibrary.Views.CustomControls.SingleValueViewer;assembly=UsefulWpfLibrary"
     xmlns:test="clr-namespace:WpfApp.Test"
-    xmlns:tools="clr-namespace:UsefulWpfLibrary.Logic.Tools;assembly=UsefulWpfLibrary"
     Title="MainWindow"
     Width="800"
     Height="450"
     d:DataContext="{d:DesignInstance test:MainWindowViewModel}"
-    tools:DataContextTools.DataContextType="test:MainWindowViewModel"
     FontSize=".5cm"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+    <b:Interaction.Behaviors>
+        <behaviors:DataContextBehavior Type="test:MainWindowViewModel" />
+    </b:Interaction.Behaviors>
     <StackPanel>
         <singleValueViewer:SingleValueViewer
             ValueName="123"

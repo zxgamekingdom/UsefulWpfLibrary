@@ -12,5 +12,5 @@
     d:DataContext="{d:DesignInstance local:Window1ViewModel}"
     tools:DataContextTools.DataContextType="local:Window1ViewModel"
     mc:Ignorable="d">
-    <Grid/>
+    <Grid />
 </Window>
