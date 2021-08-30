@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>net5.0-windows;net48</TargetFrameworks>
 		<UseWPF>true</UseWPF>
@@ -11,8 +11,5 @@
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	  <PackageReference Include="PropertyChanged.Fody" Version="3.4.0" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Views\Logic\" />
 	</ItemGroup>
 </Project>

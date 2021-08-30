@@ -14,6 +14,7 @@ namespace WpfApp.Test
 
         public App()
         {
+            ConsoleTools.AllocConsole();
             Ioc.Init(registry =>
             {
             });
