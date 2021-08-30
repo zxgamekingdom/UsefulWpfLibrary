@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using UsefulWpfLibrary.Logic.TasksHelpers;
 
 namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
 {
@@ -10,23 +12,27 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             private CancellationToken? _cancellationToken;
             private TaskCreationOptions? _creationOptions;
             private TaskScheduler? _scheduler;
+            private readonly Func<CancellationToken, Task<TResult>> _func;
 
-            protected CancellationToken GetCancellationToken()
+            protected AbstractFuncTask(Func<CancellationToken, Task<TResult>> func)
+            {
+                _func = func;
+            }
+
+            private CancellationToken GetCancellationToken()
             {
                 return _cancellationToken ?? CancellationToken.None;
             }
 
-            protected TaskCreationOptions GetCreationOptions()
+            private TaskCreationOptions GetCreationOptions()
             {
                 return _creationOptions ?? TaskCreationOptions.None;
             }
 
-            protected TaskScheduler GetScheduler()
+            private TaskScheduler GetScheduler()
             {
                 return _scheduler ?? TaskScheduler.Current;
             }
-
-            public abstract Task<TResult> Run();
 
             public IFuncTask<TResult> SetCancellationToken(
                 CancellationToken? cancellationToken)
@@ -46,6 +52,26 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             {
                 _scheduler = scheduler;
                 return this;
+            }
+
+            public Task<TResult> Run()
+            {
+                var task = new Task<Task<TResult>>(async () =>
+                    {
+                        try
+                        {
+                            return await _func.Invoke(GetCancellationToken());
+                        }
+                        catch (Exception e)
+                        {
+                            TaskExceptionObserver.OnUnhandledTaskException(e);
+                            throw;
+                        }
+                    },
+                    GetCancellationToken(),
+                    GetCreationOptions());
+                task.Start(GetScheduler());
+                return task.Unwrap();
             }
         }
     }

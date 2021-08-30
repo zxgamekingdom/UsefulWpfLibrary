@@ -6,7 +6,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
 {
     public static partial class ObserveExceptionTask
     {
-        class CancellationTokenFuncTask<T> : CancellationTokenTaskFuncTask<T>
+        class CancellationTokenFuncTask<T> : AbstractFuncTask<T>
         {
             public CancellationTokenFuncTask(Func<CancellationToken, T> func) : base(
                 Converter(func))
