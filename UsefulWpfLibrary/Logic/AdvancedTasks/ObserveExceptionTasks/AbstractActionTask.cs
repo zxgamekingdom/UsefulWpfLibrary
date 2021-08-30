@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UsefulWpfLibrary.Logic.AdvancedTasks.Logic;
 using UsefulWpfLibrary.Logic.TasksHelpers;
 
 namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
@@ -37,39 +38,30 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             public IActionTask SetCancellationToken(
                 CancellationToken? cancellationToken)
             {
-                CheckState();
+                TaskState.CheckState();
                 _cancellationToken = cancellationToken;
                 return this;
             }
 
             public IActionTask SetCreationOptions(TaskCreationOptions? creationOptions)
             {
-                CheckState();
+                TaskState.CheckState();
                 _creationOptions = creationOptions;
                 return this;
             }
 
             public IActionTask SetScheduler(TaskScheduler? scheduler)
             {
-                CheckState();
+                TaskState.CheckState();
                 _scheduler = scheduler;
                 return this;
             }
 
-            public bool IsStarted { get; private set; }
-
-            void CheckState()
-            {
-                if (IsStarted)
-                {
-                    throw new InvalidOperationException("任务已经开始运行了,无法执行此操作");
-                }
-            }
+            public CheckTaskState TaskState { get; } = new();
 
             public Task Run()
             {
-                CheckState();
-                IsStarted = true;
+                TaskState.Start();
                 var task = new Task<Task>(async () =>
                     {
                         try
