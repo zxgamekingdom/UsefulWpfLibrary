@@ -77,7 +77,8 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
             {
                 Token.ThrowIfCancellationRequested();
                 TaskState.Start();
-                var tasks = new List<Task>(_bag.Count);
+                int bagCount = _bag.Count;
+                var tasks = new List<Task>(bagCount);
                 foreach (ObserveExceptionTask.IActionTask actionTask in _bag)
                 {
                     Token.ThrowIfCancellationRequested();
@@ -96,9 +97,23 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
                     // ignored
                 }
 
-#pragma warning disable AsyncFixer02 // Long-running or blocking operations inside an async method
-                Task.WaitAll(tasks.ToArray(), Token);
-#pragma warning restore AsyncFixer02 // Long-running or blocking operations inside an async method
+                var exceptions = new List<Exception>(bagCount);
+                foreach (Task task in tasks)
+                {
+                    try
+                    {
+                        await task;
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                }
+
+                if (exceptions.Count != 0)
+                {
+                    throw new AggregateException(exceptions);
+                }
             }
 
             public IParallelTask SetCancellationToken(

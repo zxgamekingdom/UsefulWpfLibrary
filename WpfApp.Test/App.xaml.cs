@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using UsefulWpfLibrary.Logic;
 using UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks;
+using UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks;
 using UsefulWpfLibrary.Logic.Extensions;
 using UsefulWpfLibrary.Logic.Tools;
 
@@ -27,25 +28,32 @@ namespace WpfApp.Test
             InitializeComponent();
             _mutex = SingletonProgramTools.GenToken(
                 "26CC549B-ACED-41DD-ADAF-6F252EC835F4");
-            ObserveExceptionTask.Run(ct =>
-                {
-                    return test(ct);
-                },
-                new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token);
+            NewMethod1();
         }
 
-        private int test(CancellationToken ct)
+        private static async Task NewMethod()
         {
-            int i = 0;
-            var stackTrace = new StackTrace();
-            foreach (StackFrame stackFrame in stackTrace.GetFrames())
-            {
-                MethodBase methodBase = stackFrame.GetMethod();
-                new { methodBase.Name, methodBase.DeclaringType.FullName }.WriteLine(
-                    ConsoleColor.Cyan);
-            }
+            using var cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+            cancellationTokenSource.Cancel();
+            await Task.Delay(100, cancellationToken);
+        }
 
-            return 1 / i;
+        private static async Task NewMethod1()
+        {
+            try
+            {
+                ParallelTask.IParallelTask parallelTask = ParallelTask.Create()
+                    .AddTask(() => throw new InvalidOperationException())
+                    .AddTask(NewMethod)
+                    .AddTask(() => throw new DivideByZeroException())
+                    .AddTask(() => throw new TaskCanceledException());
+                await parallelTask.Run();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }
