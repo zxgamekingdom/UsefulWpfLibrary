@@ -37,24 +37,39 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             public IActionTask SetCancellationToken(
                 CancellationToken? cancellationToken)
             {
+                CheckState();
                 _cancellationToken = cancellationToken;
                 return this;
             }
 
             public IActionTask SetCreationOptions(TaskCreationOptions? creationOptions)
             {
+                CheckState();
                 _creationOptions = creationOptions;
                 return this;
             }
 
             public IActionTask SetScheduler(TaskScheduler? scheduler)
             {
+                CheckState();
                 _scheduler = scheduler;
                 return this;
             }
 
-            public  Task Run()
+            public bool IsStarted { get; private set; }
+
+            void CheckState()
             {
+                if (IsStarted)
+                {
+                    throw new InvalidOperationException("任务已经开始运行了,无法执行此操作");
+                }
+            }
+
+            public Task Run()
+            {
+                CheckState();
+                IsStarted = true;
                 var task = new Task<Task>(async () =>
                     {
                         try

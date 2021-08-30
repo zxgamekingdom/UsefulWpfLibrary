@@ -34,9 +34,20 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
                 return _scheduler ?? TaskScheduler.Current;
             }
 
+            void CheckState()
+            {
+                if (IsStarted)
+                {
+                    throw new InvalidOperationException("任务已经开始运行了,无法执行此操作");
+                }
+            }
+
+            public bool IsStarted { get; private set; }
+
             public IFuncTask<TResult> SetCancellationToken(
                 CancellationToken? cancellationToken)
             {
+                CheckState();
                 _cancellationToken = cancellationToken;
                 return this;
             }
@@ -44,18 +55,22 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             public IFuncTask<TResult> SetCreationOptions(
                 TaskCreationOptions? creationOptions)
             {
+                CheckState();
                 _creationOptions = creationOptions;
                 return this;
             }
 
             public IFuncTask<TResult> SetScheduler(TaskScheduler? scheduler)
             {
+                CheckState();
                 _scheduler = scheduler;
                 return this;
             }
 
             public Task<TResult> Run()
             {
+                CheckState();
+                IsStarted = true;
                 var task = new Task<Task<TResult>>(async () =>
                     {
                         try
