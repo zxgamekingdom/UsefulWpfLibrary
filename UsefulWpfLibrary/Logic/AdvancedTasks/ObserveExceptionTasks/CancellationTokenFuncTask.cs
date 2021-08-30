@@ -1,39 +1,22 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using UsefulWpfLibrary.Logic.TasksHelpers;
 
 namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
 {
     public static partial class ObserveExceptionTask
     {
-        class CancellationTokenFuncTask<T> : AbstractFuncTask<T>
+        class CancellationTokenFuncTask<T> : CancellationTokenTaskFuncTask<T>
         {
-            private readonly Func<CancellationToken, T> _func;
-
-            public CancellationTokenFuncTask(Func<CancellationToken, T> func)
+            public CancellationTokenFuncTask(Func<CancellationToken, T> func) : base(
+                Converter(func))
             {
-                _func = func;
             }
 
-            public override Task<T> Run()
+            private static Func<CancellationToken, Task<T>> Converter(
+                Func<CancellationToken, T> func)
             {
-                var task = new Task<T>(() =>
-                    {
-                        try
-                        {
-                            return _func.Invoke(GetCancellationToken());
-                        }
-                        catch (Exception e)
-                        {
-                            TaskExceptionObserver.OnUnhandledTaskException(e);
-                            throw;
-                        }
-                    },
-                    GetCancellationToken(),
-                    GetCreationOptions());
-                task.Start(GetScheduler());
-                return task;
+                return token => Task.FromResult(func.Invoke(token));
             }
         }
     }

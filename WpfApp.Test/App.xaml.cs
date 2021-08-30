@@ -1,6 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using UsefulWpfLibrary.Logic;
+using UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks;
+using UsefulWpfLibrary.Logic.Extensions;
 using UsefulWpfLibrary.Logic.Tools;
 
 namespace WpfApp.Test
@@ -21,6 +27,25 @@ namespace WpfApp.Test
             InitializeComponent();
             _mutex = SingletonProgramTools.GenToken(
                 "26CC549B-ACED-41DD-ADAF-6F252EC835F4");
+            ObserveExceptionTask.Run(ct =>
+                {
+                    return test(ct);
+                },
+                new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token);
+        }
+
+        private int test(CancellationToken ct)
+        {
+            int i = 0;
+            var stackTrace = new StackTrace();
+            foreach (StackFrame stackFrame in stackTrace.GetFrames())
+            {
+                MethodBase methodBase = stackFrame.GetMethod();
+                new { methodBase.Name, methodBase.DeclaringType.FullName }.WriteLine(
+                    ConsoleColor.Cyan);
+            }
+
+            return 1 / i;
         }
     }
 }

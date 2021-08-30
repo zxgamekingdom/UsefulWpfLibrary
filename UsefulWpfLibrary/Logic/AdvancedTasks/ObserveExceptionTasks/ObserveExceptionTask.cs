@@ -53,7 +53,8 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             TaskCreationOptions? creationOptions = TaskCreationOptions.None,
             TaskScheduler? scheduler = null)
         {
-            return Create(action).SetCancellationToken(cancellationToken)
+            return Create(action)
+                .SetCancellationToken(cancellationToken)
                 .SetCreationOptions(creationOptions)
                 .SetScheduler(scheduler)
                 .Run();
@@ -76,13 +77,14 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             TaskCreationOptions? creationOptions = TaskCreationOptions.None,
             TaskScheduler? scheduler = null)
         {
-            return Create(func).SetCancellationToken(cancellationToken)
+            return Create(func)
+                .SetCancellationToken(cancellationToken)
                 .SetCreationOptions(creationOptions)
                 .SetScheduler(scheduler)
                 .Run();
         }
 
-        public static IActionTask Run(Func<CancellationToken, Task> func,
+        public static Task Run(Func<CancellationToken, Task> func,
             CancellationToken? cancellationToken = default,
             TaskCreationOptions? creationOptions = TaskCreationOptions.None,
             TaskScheduler? scheduler = null)
@@ -90,7 +92,8 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             return Create(func)
                 .SetCancellationToken(cancellationToken)
                 .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler);
+                .SetScheduler(scheduler)
+                .Run();
         }
 
         public static Task<TResult> Run<TResult>(Func<TResult> func,
@@ -98,13 +101,14 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             TaskCreationOptions? creationOptions = TaskCreationOptions.None,
             TaskScheduler? scheduler = null)
         {
-            return Create(func).SetCancellationToken(cancellationToken)
+            return Create(func)
+                .SetCancellationToken(cancellationToken)
                 .SetCreationOptions(creationOptions)
                 .SetScheduler(scheduler)
                 .Run();
         }
 
-        public static IFuncTask<TResult> Run<TResult>(Func<Task<TResult>> func,
+        public static Task<TResult> Run<TResult>(Func<Task<TResult>> func,
             CancellationToken? cancellationToken = default,
             TaskCreationOptions? creationOptions = TaskCreationOptions.None,
             TaskScheduler? scheduler = null)
@@ -112,11 +116,11 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             return Create(func)
                 .SetCancellationToken(cancellationToken)
                 .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler);
+                .SetScheduler(scheduler)
+                .Run();
         }
 
-        public static IFuncTask<TResult> Run<TResult>(
-            Func<CancellationToken, TResult> func,
+        public static Task<TResult> Run<TResult>(Func<CancellationToken, TResult> func,
             CancellationToken? cancellationToken = default,
             TaskCreationOptions? creationOptions = TaskCreationOptions.None,
             TaskScheduler? scheduler = null)
@@ -124,10 +128,11 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             return Create(func)
                 .SetCancellationToken(cancellationToken)
                 .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler);
+                .SetScheduler(scheduler)
+                .Run();
         }
 
-        public static IFuncTask<TResult> Run<TResult>(
+        public static Task<TResult> Run<TResult>(
             Func<CancellationToken, Task<TResult>> func,
             CancellationToken? cancellationToken = default,
             TaskCreationOptions? creationOptions = TaskCreationOptions.None,
@@ -136,7 +141,8 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             return Create(func)
                 .SetCancellationToken(cancellationToken)
                 .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler);
+                .SetScheduler(scheduler)
+                .Run();
         }
     }
 }
