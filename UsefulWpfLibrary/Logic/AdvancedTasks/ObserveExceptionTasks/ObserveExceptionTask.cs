@@ -4,142 +4,154 @@ using System.Threading.Tasks;
 
 namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
 {
-    public static partial class ObserveExceptionTask
+    public static class ObserveExceptionTask
     {
-        public static IActionTask Create(Action action)
+        public static FuncInfo<TResult> Create<TResult>(
+            Func<CancellationToken, Task<TResult>> func,
+            CancellationToken token = default)
         {
-            return new ActionTask(action);
+            return new FuncInfo<TResult>(func, token);
         }
 
-        public static IActionTask Create(Action<CancellationToken> action)
+        public static FuncInfo<TResult> Create<TResult>(Func<Task<TResult>> func,
+            CancellationToken token = default)
         {
-            return new CancellationTokenActionTask(action);
+            return new FuncInfo<TResult>(_ => func.Invoke(), token);
         }
 
-        public static IActionTask Create(Func<Task> func)
+        public static FuncInfo<TResult> Create<TResult>(Func<TResult> func,
+            CancellationToken token = default)
         {
-            return new TaskActionTask(func);
+            return new FuncInfo<TResult>(_ => Task.FromResult(func.Invoke()), token);
         }
 
-        public static IActionTask Create(Func<CancellationToken, Task> func)
+        public static FuncInfo<TResult> Create<TResult>(
+            Func<CancellationToken, TResult> func,
+            CancellationToken token = default)
         {
-            return new CancellationTokenTaskActionTask(func);
+            return new FuncInfo<TResult>(cancellationToken =>
+                    Task.FromResult(func.Invoke(cancellationToken)),
+                token);
         }
 
-        public static IFuncTask<TResult> Create<TResult>(Func<TResult> func)
+        public static ActionInfo Create(Func<CancellationToken, Task> action,
+            CancellationToken token = default)
         {
-            return new FuncTask<TResult>(func);
+            return new ActionInfo(action, token);
         }
 
-        public static IFuncTask<TResult> Create<TResult>(Func<Task<TResult>> func)
+        public static ActionInfo Create(Action action,
+            CancellationToken token = default)
         {
-            return new TaskFuncTask<TResult>(func);
+            return new ActionInfo(_ =>
+                {
+                    action.Invoke();
+                    return Task.CompletedTask;
+                },
+                token);
         }
 
-        public static IFuncTask<TResult> Create<TResult>(
-            Func<CancellationToken, TResult> func)
+        public static ActionInfo Create(Action<CancellationToken> action,
+            CancellationToken token = default)
         {
-            return new CancellationTokenFuncTask<TResult>(func);
+            return new ActionInfo(cancellationToken =>
+                {
+                    action.Invoke(cancellationToken);
+                    return Task.CompletedTask;
+                },
+                token);
         }
 
-        public static IFuncTask<TResult> Create<TResult>(
-            Func<CancellationToken, Task<TResult>> func)
+        public static ActionInfo Create(Func<Task> action,
+            CancellationToken token = default)
         {
-            return new CancellationTokenTaskFuncTask<TResult>(func);
+            return new ActionInfo(_ => action.Invoke(), token);
         }
 
-        public static Task Run(Action action,
-            CancellationToken? cancellationToken = default,
-            TaskCreationOptions? creationOptions = TaskCreationOptions.None,
-            TaskScheduler? scheduler = null)
+        public static Task<TResult> Run<TResult>(
+            Func<CancellationToken, Task<TResult>> func,
+            TaskCreationOptions? creationOptions = default,
+            TaskScheduler? scheduler = default,
+            CancellationToken token = default)
         {
-            return Create(action)
-                .SetCancellationToken(cancellationToken)
-                .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler)
-                .Run();
-        }
-
-        public static Task Run(Action<CancellationToken> action,
-            CancellationToken? cancellationToken = default,
-            TaskCreationOptions? creationOptions = TaskCreationOptions.None,
-            TaskScheduler? scheduler = null)
-        {
-            return Create(action)
-                .SetCancellationToken(cancellationToken)
-                .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler)
-                .Run();
-        }
-
-        public static Task Run(Func<Task> func,
-            CancellationToken? cancellationToken = default,
-            TaskCreationOptions? creationOptions = TaskCreationOptions.None,
-            TaskScheduler? scheduler = null)
-        {
-            return Create(func)
-                .SetCancellationToken(cancellationToken)
-                .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler)
-                .Run();
-        }
-
-        public static Task Run(Func<CancellationToken, Task> func,
-            CancellationToken? cancellationToken = default,
-            TaskCreationOptions? creationOptions = TaskCreationOptions.None,
-            TaskScheduler? scheduler = null)
-        {
-            return Create(func)
-                .SetCancellationToken(cancellationToken)
-                .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler)
-                .Run();
-        }
-
-        public static Task<TResult> Run<TResult>(Func<TResult> func,
-            CancellationToken? cancellationToken = default,
-            TaskCreationOptions? creationOptions = TaskCreationOptions.None,
-            TaskScheduler? scheduler = null)
-        {
-            return Create(func)
-                .SetCancellationToken(cancellationToken)
+            return Create(func, token)
                 .SetCreationOptions(creationOptions)
                 .SetScheduler(scheduler)
                 .Run();
         }
 
         public static Task<TResult> Run<TResult>(Func<Task<TResult>> func,
-            CancellationToken? cancellationToken = default,
-            TaskCreationOptions? creationOptions = TaskCreationOptions.None,
-            TaskScheduler? scheduler = null)
+            TaskCreationOptions? creationOptions = default,
+            TaskScheduler? scheduler = default,
+            CancellationToken token = default)
         {
-            return Create(func)
-                .SetCancellationToken(cancellationToken)
+            return Create(func, token)
+                .SetCreationOptions(creationOptions)
+                .SetScheduler(scheduler)
+                .Run();
+        }
+
+        public static Task<TResult> Run<TResult>(Func<TResult> func,
+            TaskCreationOptions? creationOptions = default,
+            TaskScheduler? scheduler = default,
+            CancellationToken token = default)
+        {
+            return Create(func, token)
                 .SetCreationOptions(creationOptions)
                 .SetScheduler(scheduler)
                 .Run();
         }
 
         public static Task<TResult> Run<TResult>(Func<CancellationToken, TResult> func,
-            CancellationToken? cancellationToken = default,
-            TaskCreationOptions? creationOptions = TaskCreationOptions.None,
-            TaskScheduler? scheduler = null)
+            TaskCreationOptions? creationOptions = default,
+            TaskScheduler? scheduler = default,
+            CancellationToken token = default)
         {
-            return Create(func)
-                .SetCancellationToken(cancellationToken)
+            return Create(func, token)
                 .SetCreationOptions(creationOptions)
                 .SetScheduler(scheduler)
                 .Run();
         }
 
-        public static Task<TResult> Run<TResult>(
-            Func<CancellationToken, Task<TResult>> func,
-            CancellationToken? cancellationToken = default,
-            TaskCreationOptions? creationOptions = TaskCreationOptions.None,
-            TaskScheduler? scheduler = null)
+        public static Task Run(Func<CancellationToken, Task> action,
+            TaskCreationOptions? creationOptions = default,
+            TaskScheduler? scheduler = default,
+            CancellationToken token = default)
         {
-            return Create(func)
-                .SetCancellationToken(cancellationToken)
+            return Create(action, token)
+                .SetCreationOptions(creationOptions)
+                .SetScheduler(scheduler)
+                .Run();
+        }
+
+        public static Task Run(Action action,
+            TaskCreationOptions? creationOptions = default,
+            TaskScheduler? scheduler = default,
+            CancellationToken token = default)
+        {
+            return Create(action, token)
+                .SetCreationOptions(creationOptions)
+                .SetScheduler(scheduler)
+                .Run();
+        }
+
+        public static Task Run(Action<CancellationToken> action,
+            TaskCreationOptions? creationOptions = default,
+            TaskScheduler? scheduler = default,
+            CancellationToken token = default)
+        {
+            return Create(action, token)
+                .SetCreationOptions(creationOptions)
+                .SetScheduler(scheduler)
+                .Run();
+        }
+
+        public static Task Run(Func<Task> action,
+            TaskCreationOptions? creationOptions = default,
+            TaskScheduler? scheduler = default,
+            CancellationToken token = default)
+        {
+            return Create(action, token)
                 .SetCreationOptions(creationOptions)
                 .SetScheduler(scheduler)
                 .Run();
