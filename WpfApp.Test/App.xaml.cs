@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using UsefulWpfLibrary.Logic;
-using UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks;
 using UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks;
-using UsefulWpfLibrary.Logic.Extensions;
 using UsefulWpfLibrary.Logic.Tools;
 
 namespace WpfApp.Test
