@@ -3,16 +3,17 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
 using UsefulWpfLibrary.Logic.AdvancedTasks.Logic;
 using UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks;
 
 namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
 {
     public record SingleResultParallelInfo<TResult>(TResult Result,
-        CancellationToken? Token = default) where TResult : class
+        CancellationToken? Token = default) :
+        TaskInfo<SingleResultParallelInfo<TResult>>(Token) where TResult : class
     {
         private readonly ConcurrentBag<ActionInfo> _bag = new();
-        public CheckTaskState TaskState { get; } = new();
 
         public Task<TResult> Run()
         {
@@ -52,18 +53,10 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
                     }
                 }
 
-                if (exceptions.Count != 0)
-                {
-                    throw new AggregateException(exceptions);
-                }
-
-                return Result;
+                return exceptions.Count != 0 ?
+                    throw new AggregateException(exceptions) :
+                    Result;
             });
-        }
-
-        CancellationToken GetToken()
-        {
-            return Token ?? CancellationToken.None;
         }
 
         public SingleResultParallelInfo<TResult> AddTask(
@@ -71,12 +64,15 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
             TaskCreationOptions? creationOptions = default,
             TaskScheduler? scheduler = default)
         {
-            TaskState.CheckNotStarted();
-            _bag.Add(ObserveExceptionTask
-                .Create(async _ => await func.Invoke(Result, GetToken()), Token)
-                .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler));
-            return this;
+            return Config(() =>
+            {
+                _bag.Add(ObserveExceptionTask
+                    .Create(async token =>
+                            await func.Invoke(Result, token).ConfigureAwait(false),
+                        GetToken())
+                    .SetCreationOptions(creationOptions)
+                    .SetScheduler(scheduler));
+            });
         }
 
         public SingleResultParallelInfo<TResult> AddTask(
@@ -84,11 +80,11 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
             TaskCreationOptions? creationOptions = default,
             TaskScheduler? scheduler = default)
         {
-            AddTask((result, token) =>
-            {
-                func.Invoke(result, token);
-                return Task.CompletedTask;
-            });
+            _ = AddTask((result, token) =>
+                {
+                    func.Invoke(result, token);
+                    return Task.CompletedTask;
+                }, creationOptions, scheduler);
             return this;
         }
     }

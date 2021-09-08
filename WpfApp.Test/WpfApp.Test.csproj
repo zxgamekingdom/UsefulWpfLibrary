@@ -4,6 +4,7 @@
 		<TargetFrameworks>net5.0-windows;net48</TargetFrameworks>
 		<UseWPF>true</UseWPF>
 		<LangVersion>latest</LangVersion>
+		<StartupObject>WpfApp.Test.Program</StartupObject>
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />

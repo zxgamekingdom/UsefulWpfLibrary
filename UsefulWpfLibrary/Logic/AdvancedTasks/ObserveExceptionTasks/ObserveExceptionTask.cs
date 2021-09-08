@@ -18,7 +18,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
             CancellationToken? token = default)
         {
             return Create(cancellationToken =>
-                    Task.FromResult(func.Invoke(cancellationToken)),
+                   Task.FromResult(func.Invoke(cancellationToken)),
                 token);
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace UsefulWpfLibrary.Logic.AdvancedTasks.Logic
@@ -20,18 +21,21 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.Logic
             return _scheduler ?? TaskScheduler.Current;
         }
 
+        public TChildTaskInfo Config(Action action)
+        {
+            
+            TaskState.Config(action);
+            return (TChildTaskInfo)this;
+        }
+
         public TChildTaskInfo SetScheduler(TaskScheduler? scheduler)
         {
-            TaskState.CheckNotStarted();
-            _scheduler = scheduler;
-            return (TChildTaskInfo)this;
+            return Config(() => _scheduler = scheduler);
         }
 
         public TChildTaskInfo SetCreationOptions(TaskCreationOptions? creationOptions)
         {
-            TaskState.CheckNotStarted();
-            _creationOptions = creationOptions;
-            return (TChildTaskInfo)this;
+            return Config(() => _creationOptions = creationOptions);
         }
 
         public CancellationToken GetToken()

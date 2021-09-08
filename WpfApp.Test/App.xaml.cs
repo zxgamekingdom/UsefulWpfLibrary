@@ -1,9 +1,5 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Threading;
 using UsefulWpfLibrary.Logic;
-using UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks;
 using UsefulWpfLibrary.Logic.Tools;
 
 namespace WpfApp.Test
@@ -11,45 +7,23 @@ namespace WpfApp.Test
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
+#pragma warning disable IDE0052 // 删除未读的私有成员
         private readonly Mutex _mutex;
+#pragma warning restore IDE0052 // 删除未读的私有成员
 
         public App()
         {
             ConsoleTools.AllocConsole();
-            Ioc.Init(registry =>
+            Ioc.Init(_ =>
             {
             });
             InitializeComponent();
+#pragma warning disable DF0021 // Marks undisposed objects assinged to a field, originated from method invocation.
             _mutex = SingletonProgramTools.GenToken(
                 "26CC549B-ACED-41DD-ADAF-6F252EC835F4");
-            NewMethod1();
-        }
-
-        private static async Task NewMethod()
-        {
-            using var cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
-            cancellationTokenSource.Cancel();
-            await Task.Delay(100, cancellationToken);
-        }
-
-        private static async Task NewMethod1()
-        {
-            try
-            {
-                ParallelTask.IParallelTask parallelTask = ParallelTask.Create()
-                    .AddTask(() => throw new InvalidOperationException())
-                    .AddTask(NewMethod)
-                    .AddTask(() => throw new DivideByZeroException())
-                    .AddTask(() => throw new TaskCanceledException());
-                await parallelTask.Run();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+#pragma warning restore DF0021 // Marks undisposed objects assinged to a field, originated from method invocation.
         }
     }
 }

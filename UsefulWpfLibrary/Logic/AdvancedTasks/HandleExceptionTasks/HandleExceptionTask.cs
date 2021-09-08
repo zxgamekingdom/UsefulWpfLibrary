@@ -18,7 +18,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             CancellationToken? token = default)
         {
             return Create(cancellationToken =>
-                    Task.FromResult(func.Invoke(cancellationToken)),
+                   Task.FromResult(func.Invoke(cancellationToken)),
                 token);
         }
 
@@ -35,7 +35,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             {
                 func.Invoke(cancellationToken);
                 return Task.CompletedTask;
-            });
+            },token);
         }
     }
 }

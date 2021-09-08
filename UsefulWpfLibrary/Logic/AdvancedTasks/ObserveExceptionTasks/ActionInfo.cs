@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+
 using UsefulWpfLibrary.Logic.AdvancedTasks.Logic;
 using UsefulWpfLibrary.Logic.TasksHelpers;
 
@@ -19,7 +20,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks
                         Token?.ThrowIfCancellationRequested();
                         try
                         {
-                            await Action.Invoke(GetToken());
+                            await Action.Invoke(GetToken()).ConfigureAwait(false);
                         }
                         catch (Exception e)
                         {

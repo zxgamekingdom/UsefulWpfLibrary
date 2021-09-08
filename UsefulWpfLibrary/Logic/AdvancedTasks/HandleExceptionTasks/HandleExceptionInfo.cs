@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+
 using UsefulWpfLibrary.Logic.AdvancedTasks.Logic;
 using UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks;
 
@@ -27,9 +28,11 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             foreach ((Func<Exception, CancellationToken, Task>? func,
                 TaskCreationOptions? creationOptions,
                 TaskScheduler? scheduler) in _onExceptionThrow)
+            {
                 await ObserveExceptionTask.Run(token => func.Invoke(e, token),
                     creationOptions,
-                    scheduler);
+                    scheduler).ConfigureAwait(false);
+            }
         }
 
         public Task Run()
@@ -41,21 +44,23 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
                 try
                 {
                     await ObserveExceptionTask.Run(Func,
-                        GetCreationOptions(),
-                        GetScheduler(),
-                        Token);
+                              GetCreationOptions(),
+                              GetScheduler(),
+                              GetToken())
+                        .ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
                     IsFuncThrowException = true;
-                    await TriggerOnExceptionThrow(e);
+                    await TriggerOnExceptionThrow(e).ConfigureAwait(false);
                     foreach ((var func, TaskCreationOptions? creationOptions,
                         TaskScheduler? scheduler) in _onReturnDefualtResult)
                     {
                         var result = await ObserveExceptionTask.Run(token =>
-                                func.Invoke(e, token),
-                            creationOptions,
-                            scheduler);
+                                     func.Invoke(e, token),
+                                creationOptions,
+                                scheduler)
+                            .ConfigureAwait(false);
                         if (result.IsHandle is true) return;
                     }
 
@@ -70,9 +75,9 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             TaskScheduler? scheduler = null) where TException : Exception
         {
             return OnExceptionThrow((exception, token) =>
-                    exception is TException e ?
-                        func.Invoke(e, token) :
-                        Task.CompletedTask,
+                   exception is TException e ?
+                       func.Invoke(e, token) :
+                       Task.CompletedTask,
                 creationOptions,
                 scheduler);
         }
@@ -86,7 +91,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             {
                 func.Invoke(exception, token);
                 return Task.CompletedTask;
-            });
+            }, creationOptions, scheduler);
         }
 
         public HandleExceptionInfo OnExceptionThrow(
@@ -108,9 +113,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             TaskCreationOptions? creationOptions = null,
             TaskScheduler? scheduler = null)
         {
-            TaskState.CheckNotStarted();
-            _onExceptionThrow.Add((func, creationOptions, scheduler));
-            return this;
+            return Config(() => _onExceptionThrow.Add((func, creationOptions, scheduler)));
         }
 
         public HandleExceptionInfo HandleException(
@@ -118,9 +121,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             TaskCreationOptions? creationOptions = null,
             TaskScheduler? scheduler = null)
         {
-            TaskState.CheckNotStarted();
-            _onReturnDefualtResult.Add((func, creationOptions, scheduler));
-            return this;
+            return Config(() => _onReturnDefualtResult.Add((func, creationOptions, scheduler)));
         }
 
         public HandleExceptionInfo HandleException(
@@ -129,7 +130,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             TaskScheduler? scheduler = null)
         {
             return HandleException((exception, token) =>
-                    Task.FromResult(func.Invoke(exception, token)),
+                   Task.FromResult(func.Invoke(exception, token)),
                 creationOptions,
                 scheduler);
         }
@@ -140,8 +141,8 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             TaskScheduler? scheduler = null) where TException : Exception
         {
             return HandleException((exception, token) => exception is TException e ?
-                    func.Invoke(e, token) :
-                    Task.FromResult(HandleResult.NotHandle()),
+                   func.Invoke(e, token) :
+                   Task.FromResult(HandleResult.NotHandle()),
                 creationOptions,
                 scheduler);
         }
@@ -152,8 +153,8 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             TaskScheduler? scheduler = null) where TException : Exception
         {
             return HandleException((exception, token) => exception is TException e ?
-                    Task.FromResult(func.Invoke(e, token)) :
-                    Task.FromResult(HandleResult.NotHandle()),
+                   Task.FromResult(func.Invoke(e, token)) :
+                   Task.FromResult(HandleResult.NotHandle()),
                 creationOptions,
                 scheduler);
         }

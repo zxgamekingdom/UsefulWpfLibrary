@@ -4,18 +4,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+
 using UsefulWpfLibrary.Logic.AdvancedTasks.Logic;
 using UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks;
 
 namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
 {
     public record CollectionResultParallelInfo<TResult>(CancellationToken? Token =
-        default)
+        default) : TaskInfo<CollectionResultParallelInfo<TResult>>(Token)
     {
         private readonly ConcurrentBag<FuncInfo<TResult>> _bag = new();
         private ReadOnlyCollection<TResult>? _results;
-
-        public CheckTaskState TaskState { get; } = new();
 
         public ReadOnlyCollection<TResult>? Results
         {
@@ -43,7 +42,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
 
                 try
                 {
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
+                    _ = await Task.WhenAll(tasks).ConfigureAwait(false);
                 }
                 catch
                 {
@@ -69,12 +68,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
 
                 var buffResults = results.AsReadOnly();
                 Results = buffResults;
-                if (exceptions.Count != 0)
-                {
-                    throw new AggregateException(exceptions);
-                }
-
-                return buffResults;
+                return exceptions.Count != 0 ? throw new AggregateException(exceptions) : buffResults;
             });
         }
 
@@ -83,11 +77,12 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
             TaskCreationOptions? creationOptions = default,
             TaskScheduler? scheduler = default)
         {
-            TaskState.CheckNotStarted();
-            _bag.Add(ObserveExceptionTask.Create(func, Token)
-                .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler));
-            return this;
+            return Config(() =>
+            {
+                _bag.Add(ObserveExceptionTask.Create(func, Token)
+                    .SetCreationOptions(creationOptions)
+                    .SetScheduler(scheduler));
+            });
         }
 
         public CollectionResultParallelInfo<TResult> AddTask(
@@ -95,7 +90,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
             TaskCreationOptions? creationOptions = default,
             TaskScheduler? scheduler = default)
         {
-            AddTask(token => Task.FromResult(func.Invoke(token)));
+            _ = AddTask(token => Task.FromResult(func.Invoke(token)), creationOptions, scheduler);
             return this;
         }
     }

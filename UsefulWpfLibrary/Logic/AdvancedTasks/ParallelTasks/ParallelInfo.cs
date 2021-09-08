@@ -3,15 +3,15 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
 using UsefulWpfLibrary.Logic.AdvancedTasks.Logic;
 using UsefulWpfLibrary.Logic.AdvancedTasks.ObserveExceptionTasks;
 
 namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
 {
-    public record ParallelInfo(CancellationToken? Token = default)
+    public record ParallelInfo(CancellationToken? Token = default) : TaskInfo<ParallelInfo>(Token)
     {
         private readonly ConcurrentBag<ActionInfo> _bag = new();
-        public CheckTaskState TaskState { get; } = new();
 
         public Task Run()
         {
@@ -62,22 +62,23 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
             TaskCreationOptions? creationOptions = default,
             TaskScheduler? scheduler = default)
         {
-            TaskState.CheckNotStarted();
-            _bag.Add(ObserveExceptionTask.Create(func, Token)
-                .SetCreationOptions(creationOptions)
-                .SetScheduler(scheduler));
-            return this;
+            return Config(() =>
+            {
+                _bag.Add(ObserveExceptionTask.Create(func, Token)
+                    .SetCreationOptions(creationOptions)
+                    .SetScheduler(scheduler));
+            });
         }
 
         public ParallelInfo AddTask(Action<CancellationToken> func,
             TaskCreationOptions? creationOptions = default,
             TaskScheduler? scheduler = default)
         {
-            AddTask(token =>
-            {
-                func.Invoke(token);
-                return Task.CompletedTask;
-            });
+            _ = AddTask(token =>
+                {
+                    func.Invoke(token);
+                    return Task.CompletedTask;
+                }, creationOptions, scheduler);
             return this;
         }
     }

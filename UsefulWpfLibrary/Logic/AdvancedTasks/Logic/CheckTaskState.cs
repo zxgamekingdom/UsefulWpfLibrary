@@ -30,7 +30,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.Logic
         /// </summary>
         public void Finished()
         {
-            if (IsStarted == false)
+            if (!IsStarted)
                 throw new InvalidOperationException("任务未启动,不能设置任务的状态为完成");
             IsFinished = true;
         }
@@ -39,13 +39,19 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.Logic
         {
             if ((IsStarted && IsFinished) is false)
             {
-                throw new InvalidOperationException(@"任务状态必须已经开始且已经完成");
+                throw new InvalidOperationException("任务状态必须已经开始且已经完成");
             }
+        }
+
+        public void Config(Action action)
+        {
+            CheckNotStarted();
+            action.Invoke();
         }
 
         public void CheckIsRunning()
         {
-            if ((IsStarted && IsFinished == false) is false)
+            if ((IsStarted && !IsFinished) is false)
             {
                 throw new InvalidOperationException("任务的状态必须为已经开始且未完成状态");
             }
@@ -92,7 +98,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.Logic
             CheckIsRunning();
             try
             {
-                await func.Invoke();
+                await func.Invoke().ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -110,7 +116,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.Logic
             CheckIsRunning();
             try
             {
-                return await func.Invoke();
+                return await func.Invoke().ConfigureAwait(false);
             }
             catch (Exception e)
             {
