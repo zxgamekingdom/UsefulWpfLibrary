@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using System.Xaml;
 using System.Xml;
+
 using UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks;
 using UsefulWpfLibrary.Logic.Extensions;
-using UsefulWpfLibrary.Logic.TasksHelpers;
 using UsefulWpfLibrary.Logic.Tools;
 
 namespace WpfApp.Test

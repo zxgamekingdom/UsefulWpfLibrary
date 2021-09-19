@@ -23,7 +23,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.Logic
 
         public TChildTaskInfo Config(Action action)
         {
-            
             TaskState.Config(action);
             return (TChildTaskInfo)this;
         }
