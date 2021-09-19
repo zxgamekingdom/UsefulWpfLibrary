@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>net5.0-windows;net48</TargetFrameworks>
+		<TargetFramework>net48</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<LangVersion>latest</LangVersion>
 		<StartupObject>WpfApp.Test.Program</StartupObject>
