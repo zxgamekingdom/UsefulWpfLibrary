@@ -23,7 +23,7 @@ namespace WpfApp.Test
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            $@"{nameof(Window1)} {nameof(Dispose)}".WriteLine();
+            $"{nameof(Window1)} {nameof(Dispose)}".WriteLine();
         }
     }
 }

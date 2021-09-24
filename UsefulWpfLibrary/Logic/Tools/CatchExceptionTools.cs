@@ -34,7 +34,7 @@ namespace UsefulWpfLibrary.Logic.Tools
         {
             try
             {
-                await func.Invoke();
+                await func.Invoke().ConfigureAwait(false);
                 return default;
             }
             catch (Exception e)
@@ -48,7 +48,7 @@ namespace UsefulWpfLibrary.Logic.Tools
         {
             try
             {
-                return (default, await func.Invoke());
+                return (default, await func.Invoke().ConfigureAwait(false));
             }
             catch (Exception e)
             {

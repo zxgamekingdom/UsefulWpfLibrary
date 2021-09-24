@@ -14,16 +14,16 @@ namespace UsefulWpfLibrary.Logic.TasksHelpers
             if (e == null) return;
             if (IsPrintOnConsole)
             {
-                int width = Console.WindowWidth;
+                var width = Console.WindowWidth;
                 var stringBuilder = new StringBuilder(1000);
-                stringBuilder.Append('!', width - 1);
-                stringBuilder.AppendLine();
-                stringBuilder.AppendLine(
-                    $"{DateTime.Now:yyyy/MM/dd tt hh:mm:ss.ffffff dddd}");
-                stringBuilder.AppendLine($"<--{nameof(UnhandledTaskException)}-->");
-                stringBuilder.AppendLine(e.ToString());
-                stringBuilder.Append('*', width - 1);
-                stringBuilder.AppendLine();
+                _ = stringBuilder.Append('!', width - 1);
+                _ = stringBuilder.AppendLine();
+                _ = stringBuilder.AppendFormat(
+                    "{0:yyyy/MM/dd tt hh:mm:ss.ffffff dddd}", DateTime.Now).AppendLine();
+                _ = stringBuilder.Append("<--").Append(nameof(UnhandledTaskException)).AppendLine("-->");
+                _ = stringBuilder.AppendLine(e.ToString());
+                _ = stringBuilder.Append('*', width - 1);
+                _ = stringBuilder.AppendLine();
                 stringBuilder.ToString().WriteLine(ConsoleColor.Red);
             }
 

@@ -12,37 +12,34 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Tools
         internal static FrameworkElement CreateDefaultSingleValueEditor(
             PropertyInfo propertyInfo)
         {
-            if (propertyInfo.PropertyType == typeof(bool))
-            {
-                return CreateBoolControl(propertyInfo);
-            }
-            else
-            {
-                return CreateDefaultControl(propertyInfo);
-            }
+            return propertyInfo.PropertyType == typeof(bool) ?
+                CreateBoolControl(propertyInfo) :
+                CreateDefaultControl(propertyInfo);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "U2U1011:Return types should be specific", Justification = "<挂起>")]
         private static FrameworkElement CreateBoolControl(PropertyInfo propertyInfo)
         {
             var contentControl = new CheckBox
             {
                 VerticalContentAlignment = VerticalAlignment.Center
             };
-            (bool get, bool set) rwAuth = GetPropertyReadWriterAuth(propertyInfo);
-            contentControl.SetBinding(ToggleButton.IsCheckedProperty,
+            var rwAuth = GetPropertyReadWriterAuth(propertyInfo);
+            _ = contentControl.SetBinding(ToggleButton.IsCheckedProperty,
                 GetBinding(propertyInfo, rwAuth));
             if (rwAuth.set is false) contentControl.IsEnabled = false;
             return contentControl;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "U2U1011:Return types should be specific", Justification = "<挂起>")]
         private static FrameworkElement CreateDefaultControl(PropertyInfo propertyInfo)
         {
             var contentControl = new TextBox
             {
                 VerticalContentAlignment = VerticalAlignment.Center
             };
-            (bool get, bool set) rwAuth = GetPropertyReadWriterAuth(propertyInfo);
-            contentControl.SetBinding(TextBox.TextProperty,
+            var rwAuth = GetPropertyReadWriterAuth(propertyInfo);
+            _ = contentControl.SetBinding(TextBox.TextProperty,
                 GetBinding(propertyInfo, rwAuth));
             if (rwAuth.set is false)
             {

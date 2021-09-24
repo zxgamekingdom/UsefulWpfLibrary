@@ -8,7 +8,7 @@ namespace UsefulWpfLibrary.Logic.Extensions
             ConsoleColor foregroundColor = ConsoleColor.Gray,
             ConsoleColor backgroundColor = ConsoleColor.Black)
         {
-            int width = Console.WindowWidth;
+            var width = Console.WindowWidth;
             new string(splitLineChar, width - 1).WriteLine(foregroundColor,
                 backgroundColor);
         }
@@ -18,8 +18,8 @@ namespace UsefulWpfLibrary.Logic.Extensions
         {
             lock (Console.Out)
             {
-                ConsoleColor backgroundBuff = Console.BackgroundColor;
-                ConsoleColor foregroundBuff = Console.ForegroundColor;
+                var backgroundBuff = Console.BackgroundColor;
+                var foregroundBuff = Console.ForegroundColor;
                 Console.BackgroundColor = backgroundColor;
                 Console.ForegroundColor = foregroundColor;
                 Console.WriteLine(t);

@@ -18,9 +18,12 @@ namespace UsefulWpfLibrary.Logic
         {
             if (disposing && IsDisposeChildren)
             {
-                foreach (T x1 in Collection)
+                foreach (var x1 in Collection)
+                {
                     if (x1 is IDisposable disposable)
                         disposable.Dispose();
+                }
+
                 Collection.Clear();
             }
         }

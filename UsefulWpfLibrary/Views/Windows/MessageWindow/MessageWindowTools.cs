@@ -20,7 +20,7 @@ namespace UsefulWpfLibrary.Views.Windows.MessageWindow
                     MessageContent = message,
                     MessageBoxButton = messageBoxButton
                 };
-                messageWindow.ShowDialog();
+                _ = messageWindow.ShowDialog();
                 return messageWindow.MessageBoxResult;
             });
         }

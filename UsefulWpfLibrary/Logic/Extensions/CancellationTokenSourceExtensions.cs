@@ -11,7 +11,7 @@ namespace UsefulWpfLibrary.Logic.Extensions
                 IEnumerable<CancellationToken>? tokens = default,
                 IEnumerable<CancellationTokenSource>? tokenSources = default)
         {
-            CancellationToken token = tokenSource.Token;
+            var token = tokenSource.Token;
             return token.Link(tokens, tokenSources);
         }
 
@@ -20,9 +20,9 @@ namespace UsefulWpfLibrary.Logic.Extensions
                 IEnumerable<CancellationToken>? tokens = default,
                 IEnumerable<CancellationTokenSource>? tokenSources = default)
         {
-            CancellationToken[]? buffTokens = tokens?.ToArray();
-            CancellationTokenSource[]? buffTokenSources = tokenSources?.ToArray();
-            int length = (buffTokens?.Length ?? 0) + (buffTokenSources?.Length) ?? 0;
+            var buffTokens = tokens?.ToArray();
+            var buffTokenSources = tokenSources?.ToArray();
+            var length = (buffTokens?.Length ?? 0) + (buffTokenSources?.Length) ?? 0;
             var list = new List<CancellationToken>(length + 1);
             if (buffTokens != null) list.AddRange(buffTokens);
             if (buffTokenSources != null)

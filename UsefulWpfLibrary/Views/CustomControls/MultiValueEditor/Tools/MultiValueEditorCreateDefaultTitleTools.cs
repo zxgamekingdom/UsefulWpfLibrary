@@ -78,9 +78,9 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Tools
             {
                 titleControl.ContextMenu ??= new ContextMenu();
                 var menuItem = new MenuItem { Header = menuItemAttribute.Header };
-                menuItem.SetBinding(MenuItem.CommandProperty,
+                _ = menuItem.SetBinding(MenuItem.CommandProperty,
                     new Binding(menuItemAttribute.CommandName));
-                titleControl.ContextMenu.Items.Add(menuItem);
+                _ = titleControl.ContextMenu.Items.Add(menuItem);
             }
         }
         private static void ApplyTitleMenuItemCommandAttribute(
@@ -121,7 +121,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Tools
                             Type = sourceInstanceContext.Type
                         })
                 };
-                titleControl.ContextMenu.Items.Add(menuItem);
+                _ = titleControl.ContextMenu.Items.Add(menuItem);
             }
         }
     }

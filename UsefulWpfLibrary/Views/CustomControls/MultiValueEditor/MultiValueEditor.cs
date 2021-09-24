@@ -35,6 +35,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
         }
 
         [SuppressMessage("ReSharper", "UnusedMember.Global")]
+        [SuppressMessage("CodeQuality", "IDE0079:请删除不必要的忽略", Justification = "<挂起>")]
         public MultiValueEditor(MultiValueEditorOptions options) : this()
         {
             Options = options;
@@ -90,10 +91,15 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
                 DefaultSingleValueEditor = contentControl
             };
             if (sourceInstanceContext.ViewModelControlOptions != null)
+            {
                 sourceInstanceContext.ViewModelControlOptions
-                    .AfterCreateDefaultSingleValueEditor?.Invoke(args);
+                   .AfterCreateDefaultSingleValueEditor?.Invoke(args);
+            }
             else
+            {
                 Options?.AfterCreateDefaultSingleValueEditor?.Invoke(args);
+            }
+
             return (false, contentControl);
         }
 
@@ -167,17 +173,22 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
                     DefaultTitleControl = titleControl
                 };
                 if (sourceInstanceContext.ViewModelControlOptions != null)
+                {
                     sourceInstanceContext.ViewModelControlOptions
-                        .AfterCreateDefaultTitleControl?.Invoke(args);
+                       .AfterCreateDefaultTitleControl?.Invoke(args);
+                }
                 else
+                {
                     Options?.AfterCreateDefaultTitleControl?.Invoke(args);
+                }
+
                 MultiValueEditorCreateDefaultTitleTools.TitleAddMenuItem(propertyInfo,
                     sourceInstanceContext,
                     titleControl,
                     Options);
                 Grid.SetColumn(titleControl, 0);
                 Grid.SetRow(titleControl, index);
-                Grid.Children.Add(titleControl);
+                _ = Grid.Children.Add(titleControl);
             }
         }
 
@@ -211,7 +222,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
                     sourceInstanceContext.ViewModelControlOptions
                         ?.FindCustomControlAttribute?.Invoke(args) ??
                     Options?.FindCustomControlAttribute?.Invoke(args);
-                (bool isHideTitle, var editorElement) =
+                (var isHideTitle, var editorElement) =
                     CreateSingleValueEditor(propertyInfo,
                         customControlAttribute,
                         sourceInstanceContext);
@@ -227,7 +238,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
                 }
 
                 Grid.SetRow(editorElement, index);
-                Grid.Children.Add(editorElement);
+                _ = Grid.Children.Add(editorElement);
                 CreateTitleControl(index,
                     propertyInfo,
                     isHideTitle,
@@ -246,8 +257,8 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
                 Width = GridLength.Auto
             });
             Grid.ColumnDefinitions.Add(new ColumnDefinition());
-            int count = valueTuples.Length;
-            for (int i = 0; i < count; i++)
+            var count = valueTuples.Length;
+            for (var i = 0; i < count; i++)
             {
                 Grid.RowDefinitions.Add(new RowDefinition());
             }
@@ -307,16 +318,18 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
                 where attribute != null
                 let order = attribute.Order
                 select (item.propertyInfo, order)).ToArray();
-            foreach (var item in orderArray)
+            foreach (var (propertyInfo, order) in orderArray)
             {
-                int i = item.order;
-                if (i < 0)
+                if (order < 0)
+                {
                     throw new ArgumentException(
-                        $"属性 {item.propertyInfo.Name} 序号不能小于零,当前的序号为{i}");
-                if (i < noOrderList.Count)
-                    noOrderList.Insert(i, item.propertyInfo);
+                        $"属性 {propertyInfo.Name} 序号不能小于零,当前的序号为{order}");
+                }
+
+                if (order < noOrderList.Count)
+                    noOrderList.Insert(order, propertyInfo);
                 else
-                    noOrderList.Add(item.propertyInfo);
+                    noOrderList.Add(propertyInfo);
             }
 
             return noOrderList.ToArray();
@@ -335,7 +348,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
                         SourceInstance = sourceInstanceContext.Instance,
                         SourceInstanceType = sourceInstanceContext.Type
                     };
-                    IgnoreAttribute? attribute =
+                    var attribute =
                         info.GetCustomAttribute<IgnoreAttribute>() ??
                         sourceInstanceContext.ViewModelControlOptions
                             ?.FindIgnoreAttribute

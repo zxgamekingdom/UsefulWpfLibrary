@@ -12,7 +12,7 @@ namespace UsefulWpfLibrary.Logic.TasksHelpers
             try
             {
                 await Task.Factory.StartNew(() => action.Invoke(token),
-                    TaskCreationOptions.LongRunning);
+                    TaskCreationOptions.LongRunning).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -28,7 +28,7 @@ namespace UsefulWpfLibrary.Logic.TasksHelpers
             try
             {
                 return await Task.Factory.StartNew(() => func.Invoke(token),
-                    TaskCreationOptions.LongRunning);
+                    TaskCreationOptions.LongRunning).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -44,7 +44,8 @@ namespace UsefulWpfLibrary.Logic.TasksHelpers
             {
                 await Task.Factory
                     .StartNew(() => func.Invoke(token), CancellationToken.None)
-                    .Unwrap();
+                    .Unwrap()
+                    .ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -62,7 +63,8 @@ namespace UsefulWpfLibrary.Logic.TasksHelpers
                 return await Task.Factory.StartNew(() =>
                              func.Invoke(token),
                        CancellationToken.None)
-                    .Unwrap();
+                    .Unwrap()
+                    .ConfigureAwait(false);
             }
             catch (Exception e)
             {

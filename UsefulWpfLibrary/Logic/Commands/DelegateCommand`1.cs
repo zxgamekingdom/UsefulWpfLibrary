@@ -108,11 +108,11 @@ namespace UsefulWpfLibrary.Logic.Commands
 
         public void Execute(object? parameter)
         {
-            TParameter? buff = _buffParameter = parameter as TParameter;
+            var buff = _buffParameter = parameter as TParameter;
             _actionExecute?.Invoke();
-            _taskExecute?.Invoke();
+            _ = (_taskExecute?.Invoke());
             _actionParameterExecute?.Invoke(buff);
-            _taskParameterExecute?.Invoke(buff);
+            _ = (_taskParameterExecute?.Invoke(buff));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -142,8 +142,8 @@ namespace UsefulWpfLibrary.Logic.Commands
                             ct);
                         IsCanExecute =
                             await canExecute.Invoke(
-                                new CanExecuteArgs<TParameter>(_buffParameter, ct));
-                        await Task.Delay(1, ct);
+                                new CanExecuteArgs<TParameter>(_buffParameter, ct)).ConfigureAwait(false);
+                        await Task.Delay(1, ct).ConfigureAwait(false);
                     }
                 },
                 Token);
@@ -163,7 +163,7 @@ namespace UsefulWpfLibrary.Logic.Commands
                         IsCanExecute =
                             canExecute.Invoke(
                                 new CanExecuteArgs<TParameter>(_buffParameter, ct));
-                        await Task.Delay(1, ct);
+                        await Task.Delay(1, ct).ConfigureAwait(false);
                     }
                 },
                 Token);

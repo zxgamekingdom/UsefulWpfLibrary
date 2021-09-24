@@ -11,12 +11,16 @@ namespace UsefulWpfLibrary.Logic.Tools
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Wrong Usage",
             "DF0010:Marks undisposed local variables.",
             Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0079:请删除不必要的忽略", Justification = "<挂起>")]
         public static Mutex GenToken([NotNull] string identification)
         {
             if (string.IsNullOrWhiteSpace(identification))
+            {
                 throw new ArgumentException("Value cannot be null or whitespace.",
                     nameof(identification));
-            Mutex mutex = new(true, identification, out bool @new);
+            }
+
+            Mutex mutex = new(true, identification, out var @new);
             if (@new is false)
             {
                 $@"已有一个唯一识别码为""{identification}""的软件正在运行,本软件无法运行".ShowErrorMessageBox();
