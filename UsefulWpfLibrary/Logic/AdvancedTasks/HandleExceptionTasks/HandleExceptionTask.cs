@@ -25,6 +25,18 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             if (IsRan) throw new InvalidOperationException("任务已经开始运行了,无法执行此操作");
         }
 
+        public HandleExceptionTask OnExceptionThrow(Type exceptionType,
+            Func<Exception, CancellationToken, Task> func,
+            TaskCreationOptions? creationOptions = null,
+            TaskScheduler? scheduler = null)
+        {
+            CheckNotRan();
+            CheckIsExceptionType(exceptionType);
+            _onExceptionThrowDelegates.Add((exceptionType, func,
+                creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
+            return this;
+        }
+
         public HandleExceptionTask OnExceptionThrow<TException>(
             Func<TException, CancellationToken, Task> func,
             TaskCreationOptions? creationOptions = null,
@@ -41,25 +53,14 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             TaskCreationOptions? creationOptions = null,
             TaskScheduler? scheduler = null) where TException : Exception
         {
-            return OnExceptionThrow<TException>((exception, token) =>
+            return OnExceptionThrow(typeof(TException),
+                (exception, token) =>
                 {
-                    func.Invoke(exception, token);
+                    func.Invoke((TException)exception, token);
                     return Task.CompletedTask;
                 },
                 creationOptions,
                 scheduler);
-        }
-
-        public HandleExceptionTask OnExceptionThrow(Type exceptionType,
-            Func<Exception, CancellationToken, Task> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            CheckNotRan();
-            CheckIsExceptionType(exceptionType);
-            _onExceptionThrowDelegates.Add((exceptionType, func,
-                creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
-            return this;
         }
 
         public HandleExceptionTask OnExceptionThrow(Type exceptionType,
@@ -168,10 +169,11 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
                 if (exceptionType.IsAssignableFrom(type))
                 {
                     var result = await RunSingleHandleLogic(e,
-                        token,
-                        @delegate,
-                        taskCreationOptions,
-                        taskScheduler).ConfigureAwait(false);
+                            token,
+                            @delegate,
+                            taskCreationOptions,
+                            taskScheduler)
+                        .ConfigureAwait(false);
                     if (result.IsHandle)
                     {
                         buff = result;

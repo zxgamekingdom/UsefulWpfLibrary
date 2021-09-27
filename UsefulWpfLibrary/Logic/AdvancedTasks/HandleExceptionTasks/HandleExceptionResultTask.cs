@@ -26,6 +26,18 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
 
         public bool IsRan { get; private set; }
 
+        public HandleExceptionResultTask<TResult> OnExceptionThrow(Type exceptionType,
+            Func<Exception, CancellationToken, Task> func,
+            TaskCreationOptions? creationOptions = null,
+            TaskScheduler? scheduler = null)
+        {
+            CheckNotRan();
+            CheckIsExceptionType(exceptionType);
+            _onExceptionThrowDelegates.Add((exceptionType, func,
+                creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
+            return this;
+        }
+
         public HandleExceptionResultTask<TResult> OnExceptionThrow<TException>(
             Func<TException, CancellationToken, Task> func,
             TaskCreationOptions? creationOptions = null,
@@ -42,25 +54,14 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             TaskCreationOptions? creationOptions = null,
             TaskScheduler? scheduler = null) where TException : Exception
         {
-            return OnExceptionThrow<TException>((exception, token) =>
+            return OnExceptionThrow(typeof(TException),
+                (exception, token) =>
                 {
-                    func.Invoke(exception, token);
+                    func.Invoke((TException)exception, token);
                     return Task.CompletedTask;
                 },
                 creationOptions,
                 scheduler);
-        }
-
-        public HandleExceptionResultTask<TResult> OnExceptionThrow(Type exceptionType,
-            Func<Exception, CancellationToken, Task> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            CheckNotRan();
-            CheckIsExceptionType(exceptionType);
-            _onExceptionThrowDelegates.Add((exceptionType, func,
-                creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
-            return this;
         }
 
         public HandleExceptionResultTask<TResult> OnExceptionThrow(Type exceptionType,
@@ -76,6 +77,18 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
                 },
                 creationOptions,
                 scheduler);
+        }
+
+        public HandleExceptionResultTask<TResult> Handle(Type exceptionType,
+            Func<Exception, CancellationToken, Task<HandleResult<TResult>>> func,
+            TaskCreationOptions? creationOptions = null,
+            TaskScheduler? scheduler = null)
+        {
+            CheckNotRan();
+            CheckIsExceptionType(exceptionType);
+            _handleDelegates.Add((exceptionType, func,
+                creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
+            return this;
         }
 
         public HandleExceptionResultTask<TResult> Handle<TException>(
@@ -99,18 +112,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
                     Task.FromResult(func.Invoke((TException)exception, token)),
                 creationOptions,
                 scheduler);
-        }
-
-        public HandleExceptionResultTask<TResult> Handle(Type exceptionType,
-            Func<Exception, CancellationToken, Task<HandleResult<TResult>>> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            CheckNotRan();
-            CheckIsExceptionType(exceptionType);
-            _handleDelegates.Add((exceptionType, func,
-                creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
-            return this;
         }
 
         public HandleExceptionResultTask<TResult> Handle(Type exceptionType,

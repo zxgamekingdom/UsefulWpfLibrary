@@ -57,7 +57,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Tools
         private static Binding GetBinding(PropertyInfo propertyInfo,
             (bool get, bool set) tuple)
         {
-            return new(propertyInfo.Name)
+            return new Binding(propertyInfo.Name)
             {
                 Mode = tuple switch
                 {
