@@ -15,7 +15,7 @@ namespace WpfApp.Test
             try
             {
                 var i = 0;
-                await RetryTaskTools.Create(_ =>
+                await new RetryTaskBuilder().Create(_ =>
                     {
                         Console.Out.WriteLine("i = {0}", i);
 

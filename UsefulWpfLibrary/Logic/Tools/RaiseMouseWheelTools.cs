@@ -21,11 +21,10 @@ namespace UsefulWpfLibrary.Logic.Tools
             MouseWheelEventArgs e)
         {
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var eventArgs = new MouseWheelEventArgs(e.MouseDevice,
-                e.Timestamp,
-                e.Delta);
-            eventArgs.RoutedEvent = UIElement.MouseWheelEvent;
-            eventArgs.Source = sender;
+            var eventArgs = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+            {
+                RoutedEvent = UIElement.MouseWheelEvent, Source = sender
+            };
             ((FrameworkElement)sender).RaiseEvent(eventArgs);
         }
 

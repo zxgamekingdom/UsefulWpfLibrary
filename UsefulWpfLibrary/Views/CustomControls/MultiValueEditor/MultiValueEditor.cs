@@ -34,7 +34,6 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor
             Unloaded += (_, _) => DataContextChanged -= OnDataContextChanged;
         }
 
-        [SuppressMessage("ReSharper", "UnusedMember.Global")]
         [SuppressMessage("CodeQuality", "IDE0079:请删除不必要的忽略", Justification = "<挂起>")]
         public MultiValueEditor(MultiValueEditorOptions options) : this()
         {

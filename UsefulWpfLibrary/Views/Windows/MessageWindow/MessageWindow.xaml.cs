@@ -7,7 +7,7 @@ namespace UsefulWpfLibrary.Views.Windows.MessageWindow
     /// <summary>
     /// MessageWindow.xaml 的交互逻辑
     /// </summary>
-    partial class MessageWindow : Window
+    partial class MessageWindow
     {
         public static readonly DependencyProperty MessageBoxButtonProperty =
             DependencyProperty.Register(nameof(MessageBoxButton),

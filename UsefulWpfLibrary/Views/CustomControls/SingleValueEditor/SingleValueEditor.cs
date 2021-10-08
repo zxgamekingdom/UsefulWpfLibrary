@@ -14,7 +14,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.SingleValueEditor
             DependencyProperty.Register(nameof(Value),
                 typeof(object),
                 typeof(SingleValueEditor),
-                new FrameworkPropertyMetadata(default(object),
+                new FrameworkPropertyMetadata(default,
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         static SingleValueEditor()
         {
@@ -23,7 +23,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.SingleValueEditor
         }
         public object Value
         {
-            get => (object)GetValue(ValueProperty);
+            get => GetValue(ValueProperty);
             set => SetValue(ValueProperty, value);
         }
         public string ValueName

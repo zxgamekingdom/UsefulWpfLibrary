@@ -77,10 +77,9 @@ namespace WpfApp.Test
                 {
                     AfterCreateDefaultTitleControl = args =>
                     {
-                        if (args.DefaultTitleControl is TextBlock textBlock)
+                        if (args.DefaultTitleControl is TextBlock textBlock && args.PropertyInfo?.Name is nameof(I2))
                         {
-                            if (args.PropertyInfo?.Name is nameof(I2))
-                                textBlock.Background = Brushes.Red;
+                            textBlock.Background = Brushes.Red;
                         }
                     },
                     AfterCreateDefaultSingleValueEditor = (args) =>

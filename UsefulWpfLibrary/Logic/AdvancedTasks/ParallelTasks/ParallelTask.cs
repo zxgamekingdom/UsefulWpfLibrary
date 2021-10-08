@@ -30,19 +30,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
             if (IsRan) throw new InvalidOperationException("任务已经开始运行了,无法添加任务");
         }
 
-        public ParallelTask Add(Action<CancellationToken> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            CheckNotRan();
-            _infos.Add((token =>
-            {
-                func.Invoke(token);
-                return Task.CompletedTask;
-            }, creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
-            return this;
-        }
-
         public Task Run(TaskCreationOptions? creationOptions = null,
             TaskScheduler? scheduler = null)
         {

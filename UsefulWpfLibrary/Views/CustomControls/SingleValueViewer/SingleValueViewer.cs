@@ -22,7 +22,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.SingleValueViewer
         }
         public object Value
         {
-            get => (object)GetValue(ValueProperty);
+            get => GetValue(ValueProperty);
             set => SetValue(ValueProperty, value);
         }
         public string ValueName

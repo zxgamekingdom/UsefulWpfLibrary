@@ -8,9 +8,6 @@ namespace UsefulWpfLibrary.Logic.Tools
 {
     public static class SingletonProgramTools
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Wrong Usage",
-            "DF0010:Marks undisposed local variables.",
-            Justification = "<挂起>")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0079:请删除不必要的忽略", Justification = "<挂起>")]
         public static Mutex GenToken([NotNull] string identification)
         {

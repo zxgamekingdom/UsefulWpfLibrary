@@ -48,36 +48,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
                 scheduler);
         }
 
-        public HandleExceptionTask OnExceptionThrow<TException>(
-            Action<TException, CancellationToken> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null) where TException : Exception
-        {
-            return OnExceptionThrow(typeof(TException),
-                (exception, token) =>
-                {
-                    func.Invoke((TException)exception, token);
-                    return Task.CompletedTask;
-                },
-                creationOptions,
-                scheduler);
-        }
-
-        public HandleExceptionTask OnExceptionThrow(Type exceptionType,
-            Action<Exception, CancellationToken> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            return OnExceptionThrow(exceptionType,
-                (exception, token) =>
-                {
-                    func.Invoke(exception, token);
-                    return Task.CompletedTask;
-                },
-                creationOptions,
-                scheduler);
-        }
-
         public HandleExceptionTask Handle<TException>(
             Func<TException, CancellationToken, Task<HandleResult>> func,
             TaskCreationOptions? creationOptions = null,
@@ -85,18 +55,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
         {
             return Handle(typeof(TException),
                 (exception, token) => func.Invoke((TException)exception, token),
-                creationOptions,
-                scheduler);
-        }
-
-        public HandleExceptionTask Handle<TException>(
-            Func<TException, CancellationToken, HandleResult> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null) where TException : Exception
-        {
-            return Handle(typeof(TException),
-                (exception, token) =>
-                    Task.FromResult(func.Invoke((TException)exception, token)),
                 creationOptions,
                 scheduler);
         }
@@ -111,17 +69,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.HandleExceptionTasks
             _handleDelegates.Add((exceptionType, func,
                 creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
             return this;
-        }
-
-        public HandleExceptionTask Handle(Type exceptionType,
-            Func<Exception, CancellationToken, HandleResult> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            return Handle(exceptionType,
-                (exception, token) => Task.FromResult(func.Invoke(exception, token)),
-                creationOptions,
-                scheduler);
         }
 
         private static void CheckIsExceptionType(Type exceptionType)

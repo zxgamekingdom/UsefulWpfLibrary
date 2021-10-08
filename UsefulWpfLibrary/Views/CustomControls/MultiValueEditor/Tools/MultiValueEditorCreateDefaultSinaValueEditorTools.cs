@@ -17,7 +17,6 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Tools
                 CreateDefaultControl(propertyInfo);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "U2U1011:Return types should be specific", Justification = "<挂起>")]
         private static FrameworkElement CreateBoolControl(PropertyInfo propertyInfo)
         {
             var contentControl = new CheckBox
@@ -31,7 +30,6 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Tools
             return contentControl;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "U2U1011:Return types should be specific", Justification = "<挂起>")]
         private static FrameworkElement CreateDefaultControl(PropertyInfo propertyInfo)
         {
             var contentControl = new TextBox
@@ -54,6 +52,7 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Tools
         /// </summary>
         /// <param name="propertyInfo"> </param>
         /// <param name="tuple"> </param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private static Binding GetBinding(PropertyInfo propertyInfo,
             (bool get, bool set) tuple)
         {

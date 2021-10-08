@@ -9,28 +9,41 @@ namespace UsefulWpfLibrary.Views.CustomControls.MultiValueEditor.Options
     public class MultiValueEditorOptions
     {
         public Action<AfterCreateDefaultTitleControlArgs>?
-            AfterCreateDefaultTitleControl;
+            AfterCreateDefaultTitleControl { get; set; }
 
         public Action<AfterCreateDefaultSingleValueEditorArgs>?
-            AfterCreateDefaultSingleValueEditor;
+            AfterCreateDefaultSingleValueEditor { get; set; }
 
         public Func<FindCustomControlAttributeArgs, CustomSingleValueEditorAttribute?>?
-            FindCustomControlAttribute;
+            FindCustomControlAttribute { get; set; }
 
-        public Func<FindIgnoreAttributeArgs, IgnoreAttribute?>? FindIgnoreAttribute;
-        public Func<FindOrderAttributeArgs, OrderAttribute?>? FindOrderAttribute;
+        public Func<FindIgnoreAttributeArgs, IgnoreAttribute?>? FindIgnoreAttribute
+        {
+            get;
+            set;
+        }
+
+        public Func<FindOrderAttributeArgs, OrderAttribute?>? FindOrderAttribute
+        {
+            get;
+            set;
+        }
 
         public Func<FindPropertyNameAttributeArgs, PropertyNameAttribute?>?
-            FindPropertyNameAttribute;
+            FindPropertyNameAttribute { get; set; }
 
         public Func<FindTitleMenuItemUseCommandNameAttributesArgs,
                 IEnumerable<TitleMenuItemUseCommandNameAttribute>>?
-            FindTitleMenuItemUseCommandNameAttributes;
+            FindTitleMenuItemUseCommandNameAttributes { get; set; }
 
         public Func<FindTitleMenuItemAttributesArgs,
-            IEnumerable<TitleMenuItemAttribute>>? FindTitleMenuItemAttributes;
+            IEnumerable<TitleMenuItemAttribute>>? FindTitleMenuItemAttributes
+        {
+            get;
+            set;
+        }
 
         public Func<UseCustomSingleValueEditorArgs, (bool isHideTitle, UIElement
-            uiElement)?>? UseCustomSingleValueEditor;
+            uiElement)?>? UseCustomSingleValueEditor { get; set; }
     }
 }

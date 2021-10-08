@@ -103,8 +103,10 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
                 _exceptionCounters.Add(exceptionType, 0);
 
             if (_createGenericRetryContexts.ContainsKey(exceptionType) is false)
+            {
                 _createGenericRetryContexts.Add(exceptionType,
                     CreateGenericRetryContentFunc(exceptionType));
+            }
         }
 
         private async Task ExceptionThrow(Exception e,
@@ -113,6 +115,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
         {
             foreach (var item in _onExceptionThrowDelegates.Where(item =>
                 item.exceptionType.IsAssignableFrom(exceptionType)))
+            {
                 await Task.Factory.StartNew(async () =>
                             await ((Task)item.@delegate.DynamicInvoke(e, token))
                                 .ConfigureAwait(
@@ -122,6 +125,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
                         item.scheduler)
                     .Unwrap()
                     .ConfigureAwait(false);
+            }
         }
 
         private async Task<bool> IsRetry(Type exceptionType,
@@ -161,8 +165,8 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
 
                             if (isContinueRetry && (item.onContinueRetry != null))
                             {
-                                await (Task)item.onContinueRetry.DynamicInvoke(context,
-                                    token);
+                                await ((Task)item.onContinueRetry.DynamicInvoke(context,
+                                    token)).ConfigureAwait(false);
                             }
 
                             return isContinueRetry;
@@ -197,7 +201,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
                 typeof(Func<Exception, uint, uint, object>));
         }
 
-        [SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
         [SuppressMessage("CodeQuality", "IDE0079:请删除不必要的忽略", Justification = "<挂起>")]
         private void RunExceptionCounter(Type exceptionType)
         {
@@ -219,6 +222,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
             return Task.Factory.StartNew(async () =>
                     {
                         while (true)
+                        {
                             try
                             {
                                 await Func.Invoke(token).ConfigureAwait(false);
@@ -239,6 +243,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
 
                                 throw;
                             }
+                        }
                     },
                     token,
                     creationOptions.GetCreationOptions(),
