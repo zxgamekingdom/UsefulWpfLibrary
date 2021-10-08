@@ -22,10 +22,9 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
                 creationOptions, TaskScheduler scheduler)> _onExceptionThrowDelegates =
                 new();
 
-        private readonly
-            List<(Type exceptionType, Delegate continueRetry, Delegate? delay, bool
-                isGeneric, TaskCreationOptions creationOptions, TaskScheduler scheduler
-                )> _retryDelegates = new();
+        private readonly List<(Type exceptionType, Delegate continueRetry, Delegate?
+            delay, Delegate? onContinueRetry, bool isGeneric, TaskCreationOptions
+            creationOptions, TaskScheduler scheduler)> _retryDelegates = new();
 
         private uint _totalRetriesCount;
         public bool IsRan { get; private set; }
@@ -66,99 +65,26 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
                 scheduler);
         }
 
-        public RetryResultTask<TResult> OnExceptionThrow<TException>(
-            Action<TException, CancellationToken> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null) where TException : Exception
-        {
-            return OnExceptionThrow(typeof(TException),
-                (exception, token) =>
-                {
-                    func.Invoke((TException)exception, token);
-                    return Task.CompletedTask;
-                },
-                creationOptions,
-                scheduler);
-        }
-
-        public RetryResultTask<TResult> OnExceptionThrow(Type exceptionType,
-            Action<Exception, CancellationToken> func,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            return OnExceptionThrow(exceptionType,
-                (exception, token) =>
-                {
-                    func.Invoke(exception, token);
-                    return Task.CompletedTask;
-                },
-                creationOptions,
-                scheduler);
-        }
-
         public RetryResultTask<TResult> Retry(Type exceptionType,
             Func<RetryContext, CancellationToken, Task<bool>> continueRetry,
             Func<RetryContext, CancellationToken, Task<TimeSpan>>? delay = default,
+            Func<RetryContext, CancellationToken, Task>? onContinueRetry = default,
             TaskCreationOptions? creationOptions = null,
             TaskScheduler? scheduler = null)
         {
             CheckNotRan();
             CheckIsExceptionType(exceptionType);
             TryAddExceptionCounter(exceptionType);
-            _retryDelegates.Add((exceptionType, continueRetry, delay, false,
-                creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
+            _retryDelegates.Add((exceptionType, continueRetry, delay, onContinueRetry,
+                false, creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
             return this;
-        }
-
-        public RetryResultTask<TResult> Retry(Type exceptionType,
-            Func<RetryContext, CancellationToken, bool> continueRetry,
-            Func<RetryContext, CancellationToken, Task<TimeSpan>>? delay = default,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            return Retry(exceptionType,
-                (context, token) =>
-                    Task.FromResult(continueRetry.Invoke(context, token)),
-                delay,
-                creationOptions,
-                scheduler);
-        }
-
-        public RetryResultTask<TResult> Retry(Type exceptionType,
-            Func<RetryContext, CancellationToken, Task<bool>> continueRetry,
-            Func<RetryContext, CancellationToken, TimeSpan>? delay = default,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            return Retry(exceptionType,
-                continueRetry,
-                delay == null ?
-                    default :
-                    (context, token) => Task.FromResult(delay.Invoke(context, token)),
-                creationOptions,
-                scheduler);
-        }
-
-        public RetryResultTask<TResult> Retry(Type exceptionType,
-            Func<RetryContext, CancellationToken, bool> continueRetry,
-            Func<RetryContext, CancellationToken, TimeSpan>? delay = default,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null)
-        {
-            return Retry(exceptionType,
-                (context, token) =>
-                    Task.FromResult(continueRetry.Invoke(context, token)),
-                delay == null ?
-                    default :
-                    (context, token) => Task.FromResult(delay.Invoke(context, token)),
-                creationOptions,
-                scheduler);
         }
 
         public RetryResultTask<TResult> Retry<TException>(
             Func<RetryContext<TException>, CancellationToken, Task<bool>> continueRetry,
             Func<RetryContext<TException>, CancellationToken, Task<TimeSpan>>? delay =
                 default,
+            Func<RetryContext, CancellationToken, Task>? onContinueRetry = default,
             TaskCreationOptions? creationOptions = null,
             TaskScheduler? scheduler = null) where TException : Exception
         {
@@ -166,54 +92,9 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
             var exceptionType = typeof(TException);
             CheckIsExceptionType(exceptionType);
             TryAddExceptionCounter(exceptionType);
-            _retryDelegates.Add((exceptionType, continueRetry, delay, true,
-                creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
+            _retryDelegates.Add((exceptionType, continueRetry, delay, onContinueRetry,
+                true, creationOptions.GetCreationOptions(), scheduler.GetScheduler()));
             return this;
-        }
-
-        public RetryResultTask<TResult> Retry<TException>(
-            Func<RetryContext<TException>, CancellationToken, bool> continueRetry,
-            Func<RetryContext<TException>, CancellationToken, Task<TimeSpan>>? delay =
-                default,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null) where TException : Exception
-        {
-            return Retry((context, token) =>
-                    Task.FromResult(continueRetry.Invoke(context, token)),
-                delay,
-                creationOptions,
-                scheduler);
-        }
-
-        public RetryResultTask<TResult> Retry<TException>(
-            Func<RetryContext<TException>, CancellationToken, Task<bool>> continueRetry,
-            Func<RetryContext<TException>, CancellationToken, TimeSpan>? delay =
-                default,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null) where TException : Exception
-        {
-            return Retry(continueRetry,
-                delay == null ?
-                    default :
-                    (context, token) => Task.FromResult(delay.Invoke(context, token)),
-                creationOptions,
-                scheduler);
-        }
-
-        public RetryResultTask<TResult> Retry<TException>(
-            Func<RetryContext<TException>, CancellationToken, bool> continueRetry,
-            Func<RetryContext<TException>, CancellationToken, TimeSpan>? delay =
-                default,
-            TaskCreationOptions? creationOptions = null,
-            TaskScheduler? scheduler = null) where TException : Exception
-        {
-            return Retry<TException>((context, token) =>
-                    Task.FromResult(continueRetry.Invoke(context, token)),
-                delay == null ?
-                    default :
-                    (context, token) => Task.FromResult(delay.Invoke(context, token)),
-                creationOptions,
-                scheduler);
         }
 
         private void TryAddExceptionCounter(Type exceptionType)
@@ -222,10 +103,8 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
                 _exceptionCounters.Add(exceptionType, 0);
 
             if (_createGenericRetryContexts.ContainsKey(exceptionType) is false)
-            {
                 _createGenericRetryContexts.Add(exceptionType,
                     CreateGenericRetryContentFunc(exceptionType));
-            }
         }
 
         private async Task ExceptionThrow(Exception e,
@@ -234,7 +113,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
         {
             foreach (var item in _onExceptionThrowDelegates.Where(item =>
                 item.exceptionType.IsAssignableFrom(exceptionType)))
-            {
                 await Task.Factory.StartNew(async () =>
                             await ((Task)item.@delegate.DynamicInvoke(e, token))
                                 .ConfigureAwait(
@@ -244,7 +122,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
                         item.scheduler)
                     .Unwrap()
                     .ConfigureAwait(false);
-            }
         }
 
         private async Task<bool> IsRetry(Type exceptionType,
@@ -280,6 +157,12 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
                                         context,
                                         token)).ConfigureAwait(false);
                                 await Task.Delay(timeSpan, token).ConfigureAwait(false);
+                            }
+
+                            if (isContinueRetry && (item.onContinueRetry != null))
+                            {
+                                await (Task)item.onContinueRetry.DynamicInvoke(context,
+                                    token);
                             }
 
                             return isContinueRetry;
@@ -336,7 +219,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
             return Task.Factory.StartNew(async () =>
                     {
                         while (true)
-                        {
                             try
                             {
                                 return await Func.Invoke(token).ConfigureAwait(false);
@@ -356,7 +238,6 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.RetryTasks
 
                                 throw;
                             }
-                        }
                     },
                     token,
                     creationOptions.GetCreationOptions(),
