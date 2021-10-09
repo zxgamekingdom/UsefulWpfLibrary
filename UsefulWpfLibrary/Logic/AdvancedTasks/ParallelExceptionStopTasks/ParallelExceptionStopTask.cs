@@ -1,21 +1,31 @@
-using System;
+锘縰sing System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UsefulWpfLibrary.Logic.AdvancedTasks.Logic;
+using UsefulWpfLibrary.Logic.Extensions;
 
-namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
+namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelExceptionStopTasks
 {
-    public record ParallelTask(CancellationToken? Token = null)
+    public record ParallelExceptionStopTask(CancellationToken? Token = default)
     {
         private readonly ConcurrentBag<(Func<CancellationToken, Task> func,
             TaskCreationOptions creationOptions, TaskScheduler scheduler)> _infos =
             new();
 
+        private Func<Exception, Task>? _onExceptionFunc;
         public bool IsRan { get; private set; }
 
-        public ParallelTask Add(Func<CancellationToken, Task> func,
+        public ParallelExceptionStopTask OnException(Func<Exception, Task>? onException)
+        {
+            CheckNotRan();
+            _onExceptionFunc = onException;
+            return this;
+        }
+
+        public ParallelExceptionStopTask Add(Func<CancellationToken, Task> func,
             TaskCreationOptions? creationOptions = null,
             TaskScheduler? scheduler = null)
         {
@@ -27,7 +37,7 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
 
         private void CheckNotRan()
         {
-            if (IsRan) throw new InvalidOperationException("任务已经开始运行了,无法添加任务");
+            if (IsRan) throw new InvalidOperationException("浠诲姟宸茬粡寮�濮嬭繍琛屼簡,鏃犳硶娣诲姞浠诲姟");
         }
 
         public Task Run(TaskCreationOptions? creationOptions = null,
@@ -35,7 +45,9 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
         {
             CheckNotRan();
             IsRan = true;
-            var token = Token.GetToken();
+            var exceptionCts = new CancellationTokenSource();
+            var (_, token) =
+                Token.GetToken().Link(tokenSources: new[] { exceptionCts, });
             return Task.Factory.StartNew(async () =>
                     {
                         var array = _infos.ToArray();
@@ -51,6 +63,32 @@ namespace UsefulWpfLibrary.Logic.AdvancedTasks.ParallelTasks
                                     taskCreationOptions,
                                     taskScheduler)
                                 .Unwrap();
+                        }
+
+                        while (tasks.All(task => task.IsCompleted) is false)
+                        {
+                            try
+                            {
+                                foreach (var task in tasks)
+                                {
+                                    await task.ConfigureAwait(false);
+                                }
+
+                                await Task.Delay(1, token).ConfigureAwait(false);
+                            }
+                            catch (Exception e)
+                            {
+                                if (_onExceptionFunc != null)
+                                {
+                                    await _onExceptionFunc.Invoke(e)
+                                        .ConfigureAwait(false);
+                                }
+                            }
+                            finally
+                            {
+                                exceptionCts.Cancel();
+                                exceptionCts.Dispose();
+                            }
                         }
 
                         try
